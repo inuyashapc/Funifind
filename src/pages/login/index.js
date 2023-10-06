@@ -1,7 +1,32 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
+import authService from "../../services/auth.service";
 export default function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { email, password } = formData;
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Remember Me:", process.env.NEXT_PUBLIC_API_URL);
+    authService
+      .login(formData)
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
+  };
   return (
     <div className="authincation h-100">
       <div className="container h-100">
@@ -19,7 +44,7 @@ export default function Login() {
                     <h4 className="text-center mb-4 text-white">
                       Sign in your account
                     </h4>
-                    <form action="index.html">
+                    <form onSubmit={handleSubmit}>
                       <div className="form-group">
                         <label className="mb-1 text-white">
                           <strong>Email</strong>
@@ -27,7 +52,10 @@ export default function Login() {
                         <input
                           type="email"
                           className="form-control"
-                          defaultValue="hello@example.com"
+                          placeholder="hello@example.com"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="form-group">
@@ -37,7 +65,10 @@ export default function Login() {
                         <input
                           type="password"
                           className="form-control"
-                          defaultValue="Password"
+                          placeholder="Password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="form-row d-flex justify-content-between mt-4 mb-2">
@@ -47,6 +78,9 @@ export default function Login() {
                               type="checkbox"
                               className="custom-control-input"
                               id="basic_checkbox_1"
+                              name="rememberMe"
+                              checked={formData.rememberMe}
+                              onChange={handleInputChange}
                             />
                             <label
                               className="custom-control-label"
