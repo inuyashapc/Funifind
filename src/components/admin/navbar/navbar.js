@@ -3,7 +3,13 @@ import React from "react";
 import logo from "../../../../public/images/logo.png";
 import logoText from "../../../../public/images/logo-text.png";
 import avt from "../../../../public/images/profile/17.jpg";
-export default function Navbar() {
+import Link from "next/link";
+export default function Navbar({ user, setUser }) {
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.reload();
+  };
   return (
     <div>
       <div className="nav-header">
@@ -23,7 +29,23 @@ export default function Navbar() {
       <div className="header">
         <div className="flex justify-end items-center h-full gap-2 mr-8">
           <Image className="rounded-circle" src={avt} alt="logo" />
-          <h4>Nguyen Duy Anh</h4>
+          {user ? (
+            <div>
+              <button className="btn">{user?.name}</button>
+              <button className="btn" onClick={logout}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-4">
+              <Link className="btn btn-primary" href={"/login"}>
+                Login
+              </Link>
+              <Link className="btn btn-primary" href={"/register"}>
+                Register
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

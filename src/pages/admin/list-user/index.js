@@ -1287,7 +1287,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-networking" />
@@ -1317,7 +1317,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-television" />
@@ -1330,7 +1330,7 @@ export default function ListUser() {
                 <li>
                   <a
                     className="has-arrow"
-                    href="javascript:void()"
+                    href="#"
                     aria-expanded="false"
                   >
                     Email
@@ -1353,7 +1353,7 @@ export default function ListUser() {
                 <li>
                   <a
                     className="has-arrow"
-                    href="javascript:void()"
+                    href="#"
                     aria-expanded="false"
                   >
                     Shop
@@ -1387,7 +1387,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-controls-3" />
@@ -1417,7 +1417,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-internet" />
@@ -1480,7 +1480,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-heart" />
@@ -1523,7 +1523,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-notepad" />
@@ -1550,7 +1550,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-network" />
@@ -1568,7 +1568,7 @@ export default function ListUser() {
             <li>
               <a
                 className="has-arrow ai-icon"
-                href="javascript:void()"
+                href="#"
                 aria-expanded="false"
               >
                 <i className="flaticon-381-layer-1" />
@@ -1584,7 +1584,7 @@ export default function ListUser() {
                 <li>
                   <a
                     className="has-arrow"
-                    href="javascript:void()"
+                    href="#"
                     aria-expanded="false"
                   >
                     Error

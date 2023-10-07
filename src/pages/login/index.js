@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
 import authService from "../../services/auth.service";
 import { useRouter } from "next/router";
+import { actions, useStore } from "../../store";
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [state, dispatch] = useStore();
+  console.log("🚀 ========= state:", state);
   const router = useRouter();
   const [message, setMessage] = useState();
   const handleInputChange = (e) => {
@@ -21,13 +24,11 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    console.log("Email:", email);
-    console.log("Password:", password);
     console.log("Remember Me:", process.env.NEXT_PUBLIC_API_URL);
     console.log("check", checkEmail(email));
     checkEmail(email)
       ? authService
-          .login(formData)
+          .login(formData, actions)
           .then(() => {
             router.push("/");
           })

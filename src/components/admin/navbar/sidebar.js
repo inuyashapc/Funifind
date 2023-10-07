@@ -16,7 +16,7 @@ export default function Sidebar() {
                 <Link href={"/"}>User list</Link>
               </li>
               <li>
-                <Link href={"/"}>Post list</Link>
+                <Link href={"/admin/list-post"}>Post list</Link>
               </li>
             </ul>
           </li>
@@ -30,11 +30,7 @@ export default function Sidebar() {
                 <a href="./app-profile.html">Profile</a>
               </li>
               <li>
-                <a
-                  className="has-arrow"
-                  href="javascript:void()"
-                  aria-expanded="false"
-                >
+                <a className="has-arrow" href="#" aria-expanded="false">
                   Email
                 </a>
                 <ul aria-expanded="false">
@@ -52,11 +48,7 @@ export default function Sidebar() {
             </ul>
           </li>
           <li>
-            <a
-              className="has-arrow ai-icon"
-              href="javascript:void()"
-              aria-expanded="false"
-            >
+            <a className="has-arrow ai-icon" href="#" aria-expanded="false">
               <i className="flaticon-381-controls-3" />
               <span className="nav-text">Charts</span>
             </a>
@@ -82,11 +74,7 @@ export default function Sidebar() {
             </ul>
           </li>
           <li>
-            <a
-              className="has-arrow ai-icon"
-              href="javascript:void()"
-              aria-expanded="false"
-            >
+            <a className="has-arrow ai-icon" href="#" aria-expanded="false">
               <i className="flaticon-381-internet" />
               <span className="nav-text">Bootstrap</span>
             </a>

@@ -1,15 +1,14 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+
 import Navbar from "@/components/admin/navbar/navbar";
 import Sidebar from "@/components/admin/navbar/sidebar";
 const inter = Inter({ subsets: ["latin"] });
-
+import { useStore, actions } from "../store/index";
+import LayoutAdmin from "@/layouts/layoutAdmin";
 export default function Home() {
   return (
-    <div>
-      <Navbar />
-      <div className="header"></div>
-      <Sidebar />
+    <LayoutAdmin>
       <div className="content-body">
         <div className="container-fluid">
           <div className="row">
@@ -698,6 +697,6 @@ export default function Home() {
           </p>
         </div>
       </div>
-    </div>
+    </LayoutAdmin>
   );
 }
