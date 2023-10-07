@@ -2,30 +2,39 @@ import Image from "next/image";
 import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
 import authService from "../../services/auth.service";
+import { useRouter } from "next/router";
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const router = useRouter();
+  const [message, setMessage] = useState();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  const checkEmail = (input) => {
+    const emailRegex = /^[^\s@]+@fpt\.edu\.vn$/;
+    return emailRegex.test(input);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Remember Me:", process.env.NEXT_PUBLIC_API_URL);
-    authService
-      .login(formData)
-      .then(() => {
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log("error: ", error);
-      });
+    console.log("check", checkEmail(email));
+    checkEmail(email)
+      ? authService
+          .login(formData)
+          .then(() => {
+            router.push("/");
+          })
+          .catch((error) => {
+            console.log("error: ", error);
+          })
+      : setMessage("Khong phai dinh dang mail @fpt.edu.vn");
   };
   return (
     <div className="authincation h-100">
@@ -57,6 +66,7 @@ export default function Login() {
                           value={formData.email}
                           onChange={handleInputChange}
                         />
+                        <small className="text-red-400">{message}</small>
                       </div>
                       <div className="form-group">
                         <label className="mb-1 text-white">
