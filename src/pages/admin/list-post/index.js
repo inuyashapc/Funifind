@@ -7,8 +7,11 @@ import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
 import dayjs from "dayjs";
 import LayoutAdmin from "@/layouts/layoutAdmin";
+import { toast } from "react-toastify";
+import Link from "next/link";
 export default function PostList() {
   const [posts, setPosts] = useState();
+  console.log("🚀 ========= posts:", posts);
   const [postPending, setPostPending] = useState();
   const [tab, setTab] = useState(1);
   useEffect(() => {
@@ -20,7 +23,7 @@ export default function PostList() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [postPending]);
 
   useEffect(() => {
     postService
@@ -32,13 +35,59 @@ export default function PostList() {
         console.log(err);
       });
   }, []);
+
+  const approvePost = (postID) => {
+    postService
+      .approve({ postID, isApprove: true })
+      .then((res) => {
+        toast.success("Approve successfully", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setPostPending((listPost) =>
+          listPost.filter((post) => post._id !== res.data.data._id)
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const rejectPost = (postID) => {
+    postService
+      .approve({ postID, isApprove: false })
+      .then((res) => {
+        toast.warn("Reject successfully", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setPostPending((listPost) =>
+          listPost.filter((post) => post._id !== res.data.data._id)
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div>
       <LayoutAdmin>
         <div className="content-body">
           <div className="container-fluid">
             <div className="row">
-              <div className="col-xl-9 col-xxl-8">
+              <div className="col-xl-12 col-xxl-12">
                 <div className="row">
                   <div className="col-xl-12">
                     <div className="card">
@@ -85,7 +134,7 @@ export default function PostList() {
                       </div>
                       {tab === 1 && (
                         <div
-                          className="card-body loadmore-content dz-scroll height750"
+                          className="card-body loadmore-content dz-scroll"
                           id="DietMenusContent"
                         >
                           {posts?.map((post) => (
@@ -93,22 +142,22 @@ export default function PostList() {
                               key={post?.id}
                               className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
                             >
-                              <a href="ecom-product-detail.html">
+                              <Link href="/admin/list-post/detail">
                                 <Image
                                   className="rounded mr-3 mb-md-0 mb-3"
                                   src={img5}
                                   width={120}
                                   alt=""
                                 />
-                              </a>
+                              </Link>
                               <div className="media-body col-lg-8 pl-0">
                                 <h6 className="fs-16 font-w600">
-                                  <a
-                                    href="ecom-product-detail.html"
+                                  <Link
+                                    href="/admin/list-post/detail"
                                     className="text-black"
                                   >
                                     {post?.content}
-                                  </a>
+                                  </Link>
                                 </h6>
                                 <p className="fs-14">
                                   Lorem ipsum dolor sit amet, consectetur
@@ -150,7 +199,7 @@ export default function PostList() {
                                   </ul>
                                 </div>
                               </div>
-                              <a
+                              <Link
                                 href="#;"
                                 data-toggle="modal"
                                 data-target="#aAddDietMenus"
@@ -158,14 +207,14 @@ export default function PostList() {
                               >
                                 <i className="fa fa-plus scale5 mr-3" />
                                 Add Menu
-                              </a>
+                              </Link>
                             </div>
                           ))}
                         </div>
                       )}
                       {tab === 2 && (
                         <div
-                          className="card-body loadmore-content dz-scroll height750"
+                          className="card-body loadmore-content dz-scroll"
                           id="DietMenusContent"
                         >
                           {postPending?.map((post) => (
@@ -173,22 +222,22 @@ export default function PostList() {
                               key={post?.id}
                               className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
                             >
-                              <a href="ecom-product-detail.html">
+                              <Link href="ecom-product-detail.html">
                                 <Image
                                   className="rounded mr-3 mb-md-0 mb-3"
                                   src={img5}
                                   width={120}
                                   alt=""
                                 />
-                              </a>
+                              </Link>
                               <div className="media-body col-lg-8 pl-0">
                                 <h6 className="fs-16 font-w600">
-                                  <a
+                                  <Link
                                     href="ecom-product-detail.html"
                                     className="text-black"
                                   >
                                     {post?.content}
-                                  </a>
+                                  </Link>
                                 </h6>
                                 <p className="fs-14">
                                   Lorem ipsum dolor sit amet, consectetur
@@ -230,268 +279,22 @@ export default function PostList() {
                                   </ul>
                                 </div>
                               </div>
-                              <a
-                                href="#;"
-                                data-toggle="modal"
-                                data-target="#aAddDietMenus"
-                                className="btn btn-primary light btn-md ml-auto"
+                              <button
+                                className="btn btn-success light btn-md ml-auto"
+                                onClick={() => approvePost(post?._id)}
                               >
-                                <i className="fa fa-plus scale5 mr-3" />
-                                Add Menu
-                              </a>
+                                Accept
+                              </button>
+                              <button
+                                className="btn btn-danger light btn-md ml-auto"
+                                onClick={() => rejectPost(post?._id)}
+                              >
+                                Reject
+                              </button>
                             </div>
                           ))}
                         </div>
                       )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 col-xxl-4">
-                <div className="row">
-                  <div className="col-xl-12 col-md-6">
-                    <div className="card">
-                      <div className="card-header border-0">
-                        <div className="mr-auto pr-3">
-                          <h4 className="text-black fs-20">
-                            Current Diet Menu
-                          </h4>
-                          <p className="fs-13 mb-0">
-                            Lorem ipsum dolor sit ame
-                          </p>
-                        </div>
-                        <a
-                          href="#;"
-                          data-toggle="modal"
-                          data-target="#aAddDietMenus"
-                          className="plus-icon text-white rounded bg-primary"
-                        >
-                          <i className="las la-plus scale-2" />
-                        </a>
-                      </div>
-                      <div className="card-body">
-                        <div className="media mb-3">
-                          <a href="ecom-product-detail.html">
-                            <img
-                              src="images/menus/8.png"
-                              alt=""
-                              className="rounded mr-3"
-                              width={86}
-                            />
-                          </a>
-                          <div className="media-body">
-                            <h6 className="fs-16 font-w500">
-                              <a
-                                href="ecom-product-detail.html"
-                                className="text-black"
-                              >
-                                Hearty Italian-Style White Bean Soup
-                              </a>
-                            </h6>
-                            <span className="fs-14">by Andrew</span>
-                          </div>
-                        </div>
-                        <ul className="m-md-auto mt-2 pr-4">
-                          <li className="mb-2 text-nowrap">
-                            <i className="las la-clock scale5 mr-3" />
-                            <span className="fs-14 text-black text-nowrap font-w500">
-                              4-6 mins{" "}
-                            </span>
-                          </li>
-                          <li className="mb-2 text-nowrap">
-                            <i className="las la-calendar-alt scale5 mr-3" />
-                            <span className="fs-14 text-black  font-w500">
-                              Breakfast (Monday, Tuesday)
-                            </span>
-                          </li>
-                          <li className="mb-2 text-nowrap">
-                            <i className="las la-prescription-bottle scale5 mr-3" />
-                            <span className="text-nowrap fs-14 text-primary font-w500">
-                              8 Ingridients
-                            </span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-xl-12 col-md-6">
-                    <div className="card">
-                      <div className="card-header d-sm-flex d-block border-0 pb-4">
-                        <div className="mr-auto pr-3">
-                          <h4 className="text-black fs-20">
-                            Trending Ingridients
-                          </h4>
-                          <p className="fs-13 mb-0">
-                            Lorem ipsum dolor sit amet, consectetur
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        className="card-body loadmore-content dz-scroll pb-0 pt-0 height320 ps ps--active-y"
-                        id="TrendingIngridientsContent"
-                      >
-                        <div className="media border-bottom py-3">
-                          <a href="ecom-product-detail.html">
-                            <img
-                              src="images/menus/9.png"
-                              alt=""
-                              className="rounded mr-3"
-                              width={50}
-                            />
-                          </a>
-                          <div className="pr-3 mr-auto media-body">
-                            <h6 className="fs-16 font-w600 mb-0">
-                              <a
-                                href="ecom-product-detail.html"
-                                className="text-black"
-                              >
-                                Strawberry Fruit
-                              </a>
-                            </h6>
-                            <span className="fs-12">Vitamin A, B, C</span>
-                          </div>
-                          <div className="text-center">
-                            <span className="d-block">
-                              <svg
-                                width={19}
-                                height={9}
-                                viewBox="0 0 18 9"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M9 0L0 9H18L9 0Z" fill="#0B2A97" />
-                              </svg>
-                            </span>
-                            <span className="d-block fs-16 text-black font-w600">
-                              #1
-                            </span>
-                          </div>
-                        </div>
-                        <div className="media border-bottom py-3">
-                          <a href="ecom-product-detail.html">
-                            <img
-                              src="images/menus/10.png"
-                              alt=""
-                              className="rounded mr-3"
-                              width={50}
-                            />
-                          </a>
-                          <div className="pr-3 mr-auto media-body">
-                            <h6 className="fs-16 font-w600 mb-0">
-                              <a
-                                href="ecom-product-detail.html"
-                                className="text-black"
-                              >
-                                Bananas Fruit
-                              </a>
-                            </h6>
-                            <span className="fs-12">Vitamin A, B, C</span>
-                          </div>
-                          <div className="text-center">
-                            <span className="d-block">
-                              <svg
-                                width={19}
-                                height={9}
-                                viewBox="0 0 18 9"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M9 0L0 9H18L9 0Z" fill="#0B2A97" />
-                              </svg>
-                            </span>
-                            <span className="d-block fs-16 text-black font-w600">
-                              #2
-                            </span>
-                          </div>
-                        </div>
-                        <div className="media border-bottom py-3">
-                          <a href="ecom-product-detail.html">
-                            <img
-                              src="images/menus/11.png"
-                              alt=""
-                              className="rounded mr-3"
-                              width={50}
-                            />
-                          </a>
-                          <div className="pr-3 mr-auto media-body">
-                            <h6 className="fs-16 font-w600 mb-0">
-                              <a
-                                href="ecom-product-detail.html"
-                                className="text-black"
-                              >
-                                Orange Fruit
-                              </a>
-                            </h6>
-                            <span className="fs-12">Vitamin A, B, C</span>
-                          </div>
-                          <div className="text-center">
-                            <span className="d-block">
-                              <svg
-                                width={19}
-                                height={9}
-                                viewBox="0 0 18 9"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9 9.00006L18 6.10352e-05H9L0 6.10352e-05L9 9.00006Z"
-                                  fill="#C51E1E"
-                                />
-                              </svg>
-                            </span>
-                            <span className="d-block fs-16 text-black font-w600">
-                              #3
-                            </span>
-                          </div>
-                        </div>
-                        <div className="media border-bottom py-3">
-                          <a href="ecom-product-detail.html">
-                            <img
-                              src="images/menus/12.png"
-                              alt=""
-                              className="rounded mr-3"
-                              width={50}
-                            />
-                          </a>
-                          <div className="pr-3 mr-auto media-body">
-                            <h6 className="fs-16 font-w600 mb-0">
-                              <a
-                                href="ecom-product-detail.html"
-                                className="text-black"
-                              >
-                                Grapes Fruit
-                              </a>
-                            </h6>
-                            <span className="fs-12">Vitamin A, B, C</span>
-                          </div>
-                          <div className="text-center">
-                            <span className="d-block">
-                              <svg
-                                width={19}
-                                height={9}
-                                viewBox="0 0 18 9"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M9 0L0 9H18L9 0Z" fill="#0B2A97" />
-                              </svg>
-                            </span>
-                            <span className="d-block fs-16 text-black font-w600">
-                              #4
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="card-footer text-center border-0 pt-3 pb-4">
-                        <a
-                          className="text-primary dz-load-more"
-                          id="TrendingIngridients"
-                          rel="ajax/trending-ingridients.html"
-                          href="#;"
-                        >
-                          View more
-                        </a>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -500,17 +303,6 @@ export default function PostList() {
           </div>
         </div>
       </LayoutAdmin>
-      <div className="footer">
-        <div className="copyright">
-          <p>
-            Copyright © Designed &amp; Developed by{" "}
-            <a href="http://dexignzone.com/" target="_blank">
-              DexignZone
-            </a>{" "}
-            2020
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
