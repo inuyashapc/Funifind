@@ -3,14 +3,12 @@ import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
 import authService from "../../services/auth.service";
 import { useRouter } from "next/router";
-import { actions, useStore } from "../../store";
+import Link from "next/link";
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [state, dispatch] = useStore();
-  console.log("🚀 ========= state:", state);
   const router = useRouter();
   const [message, setMessage] = useState();
   const handleInputChange = (e) => {
@@ -28,7 +26,7 @@ export default function Login() {
     console.log("check", checkEmail(email));
     checkEmail(email)
       ? authService
-          .login(formData, actions)
+          .login(formData)
           .then(() => {
             router.push("/");
           })
@@ -122,9 +120,9 @@ export default function Login() {
                     <div className="new-account mt-3">
                       <p className="text-white">
                         Dont have an account?{" "}
-                        <a className="text-white" href="./page-register.html">
+                        <Link className="text-white" href="/register">
                           Sign up
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>

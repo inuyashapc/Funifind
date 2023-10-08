@@ -18,6 +18,9 @@ export default function Sidebar() {
               <li>
                 <Link href={"/admin/list-post"}>Post list</Link>
               </li>
+              <li>
+                <Link href={"/admin/list-post/create"}>Create list</Link>
+              </li>
             </ul>
           </li>
           <li>
