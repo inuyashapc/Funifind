@@ -1,10 +1,68 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
-export default function PostListAccepted({ posts }) {
+/** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
+import io from 'socket.io-client';
+import commentService from "@/services/comment.service";
+/** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
+
+export default function PostListAccepted({ posts, setPosts }) {
+  //----------------------------------------------------------
+  /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
+  const [socket, setSocket] = useState(null);
+  // Kết nối tới sever socket
+  useEffect(() => {
+	const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
+	setSocket(newSocket);
+  }, [])
+
+  // Chạy khi socket change ( có dữ liệu chuyển từ server xuống );
+  useEffect(() => {
+	if(socket){
+		// Khi có một người comment, những người khác sẽ nhận được data của comment thông qua đây
+		socket.on('getComment', response => {
+			// Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
+			if(response.data && setPosts){
+				setPosts(listPost => listPost.map(post => {
+					if (post._id === response.data.post) {
+						const isExisted = post.comments.find(comment => comment._id === response.data._id);
+						if (!isExisted)
+							post.comments.push(response.data);
+					}
+					return post;
+				}))
+			}
+		})
+	}
+  }, [socket]);
+
+  // Comment ở một post
+  const handleComment = async (e, postID) => {
+	e.preventDefault();
+	// Dữ liệu cần để tạo ra 1 comment.
+	const params = {
+		content: e.target.content.value,
+		postID
+	}
+	// call API để lưu comment;
+	commentService.createComment(params)
+		.then(response => {
+			if(response){
+				// Truyền dữ liệu lên socket để server biết có comment mới
+				socket.emit('sendComment', response.data);
+			}
+		})
+		.catch(error => {
+			console.log(error);
+		})
+
+  }
+  /** Kết thúc phần Trung sửa kết nối socket và tạo comment */
+  //----------------------------------------------------------
+
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {posts?.map((post) => (
@@ -71,6 +129,17 @@ export default function PostListAccepted({ posts }) {
                 </li>
               </ul>
             </div>
+			{/* Hiển thị danh sách comment */}
+			{post.comments.map(comment => (
+				<div>
+					{comment.content}
+				</div>
+			))}
+			{/* Tạo comment */}
+			<form className="" onSubmit={(e) => handleComment(e, post._id)}>
+				<input type="text" name="content"/>
+				<button>Submit</button>
+			</form>
           </div>
           <Link
             href="#;"

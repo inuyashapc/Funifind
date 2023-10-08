@@ -85,7 +85,8 @@ export default function PostList() {
                         Post list need to accept
                       </button>
                     </div>
-                    {tab === 1 && <PostListAccepted posts={posts} />}
+					{/* Trung thêm prop setPosts để cập nhật comment sau khi người dung comment */}
+                    {tab === 1 && <PostListAccepted posts={posts} setPosts={setPosts} />}
                     {tab === 2 && (
                       <PostListNeedAccept
                         postPending={postPending}

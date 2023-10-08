@@ -14,7 +14,7 @@ class CommentService {
 		}
 	}
 
-	deletePost(commentID) {
+	deleteComment(commentID) {
 		return axios.delete(API_URL + 'delete', {
 			headers: authHeader(),
 			params: {
