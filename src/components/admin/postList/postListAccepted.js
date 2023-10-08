@@ -28,6 +28,7 @@ export default function PostListAccepted({ posts, setPosts }) {
 			if(response.data && setPosts){
 				setPosts(listPost => listPost.map(post => {
 					if (post._id === response.data.post) {
+						// Check xem comment đã được thêm chưa, tránh duplicate
 						const isExisted = post.comments.find(comment => comment._id === response.data._id);
 						if (!isExisted)
 							post.comments.push(response.data);
