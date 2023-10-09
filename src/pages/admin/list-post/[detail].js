@@ -1,7 +1,41 @@
 import LayoutAdmin from "@/layouts/layoutAdmin";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import PostService from "../../../services/post.service";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 export default function PostDetail() {
+  const router = useRouter();
+  const ids = router.query;
+  console.log("🚀 ========= ids:", ids);
+  const [detail, setDetail] = useState();
+  console.log("🚀 ========= detail:", detail);
+  const params = useParams();
+  const id = params?.detail;
+  console.log("🚀 ========= id:", id);
+  // const getPostDetails = async () => {
+  //   try {
+  //     const detail = await PostService.getPostDetails({ postId: id });
+  //     console.log("🚀 ========= detail:", detail);
+  //     return detail;
+  //   } catch (error) {
+  //     console.log("🚀 ========= error:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   const result = getPostDetails();
+  //   console.log("🚀 ========= result:", result);
+  //   setDetail(result);
+  // }, []);
+  useEffect(() => {
+    PostService.getPostDetails({ postId: id })
+      .then((res) => {
+        console.log("🚀 ========= res:", res);
+        setDetail(res?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
   return (
     <LayoutAdmin>
       <div className="content-body">
