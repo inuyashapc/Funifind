@@ -51,6 +51,7 @@ export default function CreatePost() {
                           rows="3"
                           required
                         ></textarea>
+                        <input type="file" id="myFile" name="filename"></input>
                       </div>
                       <button type="submit" className="btn btn-primary">
                         Post
