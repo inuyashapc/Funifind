@@ -132,7 +132,7 @@ export default function PostListAccepted({ posts, setPosts }) {
             </div>
 			{/* Hiển thị danh sách comment */}
 			{post.comments.map(comment => (
-				<div>
+				<div key={comment?._id}>
 					{comment.content}
 				</div>
 			))}
