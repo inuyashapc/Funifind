@@ -7,7 +7,7 @@ export default function Sidebar() {
       <div className="deznav-scroll">
         <ul className="metismenu" id="menu">
           <li>
-            <a className="has-arrow ai-icon" aria-expanded="false">
+            <a className="has-arrow ai-icon">
               <i className="flaticon-381-networking" />
               <span className="nav-text">Dashboard</span>
             </a>
@@ -24,7 +24,7 @@ export default function Sidebar() {
             </ul>
           </li>
           <li>
-            <a className="has-arrow ai-icon" aria-expanded="false">
+            <a className="has-arrow ai-icon">
               <i className="flaticon-381-television" />
               <span className="nav-text">Apps</span>
             </a>
@@ -33,10 +33,10 @@ export default function Sidebar() {
                 <a href="./app-profile.html">Profile</a>
               </li>
               <li>
-                <a className="has-arrow" href="#" aria-expanded="false">
+                <a className="has-arrow" href="#">
                   Email
                 </a>
-                <ul aria-expanded="false">
+                <ul>
                   <li>
                     <a href="./email-compose.html">Compose</a>
                   </li>
@@ -51,11 +51,11 @@ export default function Sidebar() {
             </ul>
           </li>
           <li>
-            <a className="has-arrow ai-icon" href="#" aria-expanded="false">
+            <a className="has-arrow ai-icon" href="#">
               <i className="flaticon-381-controls-3" />
               <span className="nav-text">Charts</span>
             </a>
-            <ul aria-expanded="false">
+            <ul>
               <li>
                 <a href="./chart-flot.html">Flot</a>
               </li>
@@ -77,11 +77,11 @@ export default function Sidebar() {
             </ul>
           </li>
           <li>
-            <a className="has-arrow ai-icon" href="#" aria-expanded="false">
+            <a className="has-arrow ai-icon" href="#">
               <i className="flaticon-381-internet" />
               <span className="nav-text">Bootstrap</span>
             </a>
-            <ul aria-expanded="false">
+            <ul>
               <li>
                 <a href="./ui-accordion.html">Accordion</a>
               </li>
