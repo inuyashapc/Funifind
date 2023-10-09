@@ -102,7 +102,7 @@ export default function Login() {
                         <div className="form-group">
                           <a
                             className="text-white"
-                            href="page-forgot-password.html"
+                            href="./forgot-password"
                           >
                             Forgot Password?
                           </a>

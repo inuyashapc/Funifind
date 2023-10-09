@@ -61,7 +61,7 @@ export default function Register() {
                     <div className="new-account mt-3">
                       <p className="text-white">
                         Already have an account?{" "}
-                        <a className="text-white" href="page-login.html">
+                        <a className="text-white" href="./login">
                           Sign in
                         </a>
                       </p>
