@@ -45,7 +45,7 @@ export default function Login() {
                 <div className="col-xl-12">
                   <div className="auth-form">
                     <div className="text-center mb-3">
-                      <a href="index.html">
+                      <a href="/">
                         <Image src={logoFull} alt="logo" />
                       </a>
                     </div>
@@ -60,7 +60,7 @@ export default function Login() {
                         <input
                           type="email"
                           className="form-control"
-                          placeholder="hello@example.com"
+                          placeholder="account@fpt.edu.vn"
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}

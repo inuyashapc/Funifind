@@ -4,7 +4,7 @@ import React, { useState } from "react";
 export default function Sidebar() {
   const [sidebar, setSidebar] = useState(1);
   return (
-    <div className="deznav">
+    <div className="deznav h-auto">
       <div className="deznav-scroll">
         <ul className="metismenu" id="menu">
           <li>

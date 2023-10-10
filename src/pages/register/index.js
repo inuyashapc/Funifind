@@ -1,6 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
+import authService from '../../services/auth.service';
 
-export default function Register() {
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phoneNumber: '',
+    address: '',
+  });
+  const [errors, setErrors] = useState([]);
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add your registration logic here
+    console.log(formData);
+    authService.register(formData)
+      .then(response => {
+        setSuccess(response.data.message);
+        setErrors([])
+      })
+      .catch(err => {
+        if (err.response.data) {
+          setErrors(errors => [err.response.data.message]);
+          setSuccess("")
+        }
+      })
+  };
+
   return (
     <div className="authincation h-100">
       <div className="container h-100">
@@ -11,22 +44,28 @@ export default function Register() {
                 <div className="col-xl-12">
                   <div className="auth-form">
                     <div className="text-center mb-3">
-                      <a href="index.html">
+                      <a href="/">
                         <img src="images/logo-full.png" alt="" />
                       </a>
                     </div>
                     <h4 className="text-center mb-4 text-white">
                       Sign up your account
                     </h4>
-                    <form action="index.html">
+                    <form onSubmit={handleSubmit}>
                       <div className="form-group">
                         <label className="mb-1 text-white">
                           <strong>Username</strong>
                         </label>
                         <input
+
                           type="text"
-                          className="form-control"
-                          placeholder="username"
+                          className="form-control text-black"
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          placeholder="Type your name"
                         />
                       </div>
                       <div className="form-group">
@@ -35,8 +74,13 @@ export default function Register() {
                         </label>
                         <input
                           type="email"
-                          className="form-control"
-                          placeholder="hello@example.com"
+                          className="form-control text-black"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          placeholder="account@fpt.edu.vn"
                         />
                       </div>
                       <div className="form-group">
@@ -45,10 +89,49 @@ export default function Register() {
                         </label>
                         <input
                           type="password"
-                          className="form-control"
-                          defaultValue="Password"
+                          className="form-control text-black"
+                          id="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                          placeholder="••••••••"
                         />
                       </div>
+                      <div className="form-group">
+                        <label className="mb-1 text-white">
+                          <strong>Phone Number</strong>
+                        </label>
+                        <input
+                          type="tel"
+                          className="form-control text-black"
+                          id="phoneNumber"
+                          name="phoneNumber"
+                          value={formData.phoneNumber}
+                          onChange={handleChange}
+                          placeholder="0123456xxx"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="mb-1 text-white">
+                          <strong>Address</strong>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control text-black"
+                          id="address"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleChange}
+                          placeholder="Type your address"
+                          required
+                        />
+                      </div>
+                      {errors.map(error => (
+                        <small className='text-orange-400'>{error}</small>
+                      ))}
+                      {success !== "" ? (<small className='text-red-300'>{success}</small>) : (<small></small>)}
                       <div className="text-center mt-4">
                         <button
                           type="submit"
@@ -61,7 +144,7 @@ export default function Register() {
                     <div className="new-account mt-3">
                       <p className="text-white">
                         Already have an account?{" "}
-                        <a className="text-white" href="./login">
+                        <a className="text-white font-bold" href="./login">
                           Sign in
                         </a>
                       </p>
@@ -76,3 +159,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default RegistrationForm;
