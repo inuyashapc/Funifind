@@ -40,7 +40,6 @@ export default function PostDetail() {
           console.log(err);
         });
   }, [id]);
-
   return !postDetail ? (
     <LayoutAdmin>
       <h4 className="text-center">Loading</h4>
