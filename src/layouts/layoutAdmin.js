@@ -18,16 +18,21 @@ export default function LayoutAdmin({ children }) {
   return user?.isAdmin ? (
     <div>
       <Navbar user={user} setUser={setUser} />
-      <Sidebar />
-      {children}
+      <div className="flex">
+        <Sidebar />
+        {children}
+      </div>
+
       <Footer />
       <ToastContainer />
     </div>
   ) : (
     <div>
       <Navbar user={user} setUser={setUser} />
-      <Sidebar />
-      <h4 className="text-center">You do not access this page</h4>
+      <div className="flex mt-4">
+        <Sidebar />
+        {children}
+      </div>
       <Footer />
     </div>
   );

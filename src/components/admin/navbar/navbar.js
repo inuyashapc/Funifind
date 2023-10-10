@@ -14,18 +14,20 @@ export default function Navbar({ user, setUser }) {
   return (
     <div>
       <div className="nav-header">
-        <a href="./" className="brand-logo">
+        <Link href="/" className="brand-logo">
           <Image className="logo-abbr" src={logo} alt="logo" />
           <Image className="logo-compact" src={logoText} alt="logo" />
           <Image className="brand-title" src={logoText} alt="logo" />
-        </a>
+        </Link>
       </div>
       <div className="header">
         <div className="flex justify-end items-center h-full gap-2 mr-8">
           <Image className="rounded-circle" src={avt} alt="logo" />
           {user ? (
             <div>
-              <Link className="btn" href={"/profiles"}>{user?.name}</Link>
+              <Link className="btn" href={"/profiles"}>
+                {user?.name}
+              </Link>
               <button className="btn" onClick={logout}>
                 Logout
               </button>
