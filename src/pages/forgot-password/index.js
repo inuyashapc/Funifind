@@ -1,4 +1,6 @@
 import React from 'react'
+import Image from 'next/image'
+import logo from '../../../public/images/logo.png'
 
 export default function ForgotPassword() {
     return (
@@ -14,7 +16,7 @@ export default function ForgotPassword() {
                                             <div className="auth-form">
                                                 <div className="text-center mb-3">
                                                     <a href="index.html">
-                                                        <img src="images/logo-full.png" alt="" />
+                                                        <img src="./images/logo-full.png" alt="" />
                                                     </a>
                                                 </div>
                                                 <h4 className="text-center mb-4 text-white">
@@ -28,7 +30,7 @@ export default function ForgotPassword() {
                                                         <input
                                                             type="email"
                                                             className="form-control"
-                                                            defaultValue="hello@example.com"
+                                                            placeholder="your-account@fpt.edu.vn"
                                                         />
                                                     </div>
                                                     <div className="text-center">

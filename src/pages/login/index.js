@@ -100,9 +100,9 @@ export default function Login() {
                           </div>
                         </div>
                         <div className="form-group">
-                          <a className="text-white" href="./forgot-password">
+                          <Link className="text-white" href="./forgot-password">
                             Forgot Password?
-                          </a>
+                          </Link>
                         </div>
                       </div>
                       <div className="text-center">
