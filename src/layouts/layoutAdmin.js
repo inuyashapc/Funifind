@@ -31,7 +31,7 @@ export default function LayoutAdmin({ children }) {
       <Navbar user={user} setUser={setUser} />
       <div className="flex mt-4">
         <Sidebar />
-        {children}
+        <h4>Only admins have permission to view</h4>
       </div>
       <Footer />
     </div>
