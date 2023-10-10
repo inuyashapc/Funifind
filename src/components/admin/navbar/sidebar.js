@@ -17,15 +17,17 @@ export default function Sidebar() {
                 type="button"
                 className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
               >
-                <IconCard />
+                <div className="w-5 h-5">
+                  <IconCard />
+                </div>
                 <span className="flex-1 ml-3 text-left whitespace-nowrap">
                   {item.title}
                 </span>
                 <div
                   className={
                     sidebar === item.id
-                      ? "-rotate-90 duration-300"
-                      : "duration-300"
+                      ? "-rotate-90 duration-300 w-4 h-4"
+                      : "duration-300 w-4 h-4"
                   }
                 >
                   <IconDropdown />
