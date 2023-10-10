@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import authService from '../../services/auth.service';
+import Link from "next/link";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -44,9 +45,9 @@ const RegistrationForm = () => {
                 <div className="col-xl-12">
                   <div className="auth-form">
                     <div className="text-center mb-3">
-                      <a href="/">
+                      <Link href="/">
                         <img src="images/logo-full.png" alt="" />
-                      </a>
+                      </Link>
                     </div>
                     <h4 className="text-center mb-4 text-white">
                       Sign up your account
@@ -128,8 +129,8 @@ const RegistrationForm = () => {
                           required
                         />
                       </div>
-                      {errors.map(error => (
-                        <small className='text-orange-400'>{error}</small>
+                      {errors.map((error, index) => (
+                        <small key={index} className='text-orange-400'>{error}</small>
                       ))}
                       {success !== "" ? (<small className='text-red-300'>{success}</small>) : (<small></small>)}
                       <div className="text-center mt-4">
