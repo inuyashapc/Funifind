@@ -1,7 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import logo from "../../../../public/images/logo.png";
-import logoText from "../../../../public/images/logo-text.png";
 import Navbar from "@/components/admin/navbar/navbar";
 export default function ListUser() {
   return (
@@ -1285,11 +1282,7 @@ export default function ListUser() {
         <div className="deznav-scroll">
           <ul className="metismenu" id="menu">
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-networking" />
                 <span className="nav-text">Dashboard</span>
               </a>
@@ -1315,11 +1308,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-television" />
                 <span className="nav-text">Apps</span>
               </a>
@@ -1328,11 +1317,7 @@ export default function ListUser() {
                   <a href="./app-profile.html">Profile</a>
                 </li>
                 <li>
-                  <a
-                    className="has-arrow"
-                    href="#"
-                    aria-expanded="false"
-                  >
+                  <a className="has-arrow" href="#" aria-expanded="false">
                     Email
                   </a>
                   <ul aria-expanded="false">
@@ -1351,11 +1336,7 @@ export default function ListUser() {
                   <a href="./app-calender.html">Calendar</a>
                 </li>
                 <li>
-                  <a
-                    className="has-arrow"
-                    href="#"
-                    aria-expanded="false"
-                  >
+                  <a className="has-arrow" href="#" aria-expanded="false">
                     Shop
                   </a>
                   <ul aria-expanded="false">
@@ -1385,11 +1366,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-controls-3" />
                 <span className="nav-text">Charts</span>
               </a>
@@ -1415,11 +1392,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-internet" />
                 <span className="nav-text">Bootstrap</span>
               </a>
@@ -1478,11 +1451,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-heart" />
                 <span className="nav-text">Plugins</span>
               </a>
@@ -1521,11 +1490,7 @@ export default function ListUser() {
               </a>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-notepad" />
                 <span className="nav-text">Forms</span>
               </a>
@@ -1548,11 +1513,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-network" />
                 <span className="nav-text">Table</span>
               </a>
@@ -1566,11 +1527,7 @@ export default function ListUser() {
               </ul>
             </li>
             <li>
-              <a
-                className="has-arrow ai-icon"
-                href="#"
-                aria-expanded="false"
-              >
+              <a className="has-arrow ai-icon" href="#" aria-expanded="false">
                 <i className="flaticon-381-layer-1" />
                 <span className="nav-text">Pages</span>
               </a>
@@ -1582,11 +1539,7 @@ export default function ListUser() {
                   <a href="./page-login.html">Login</a>
                 </li>
                 <li>
-                  <a
-                    className="has-arrow"
-                    href="#"
-                    aria-expanded="false"
-                  >
+                  <a className="has-arrow" href="#" aria-expanded="false">
                     Error
                   </a>
                   <ul aria-expanded="false">

@@ -18,13 +18,6 @@ export default function Navbar({ user, setUser }) {
           <Image className="logo-compact" src={logoText} alt="logo" />
           <Image className="brand-title" src={logoText} alt="logo" />
         </a>
-        <div className="nav-control">
-          <div className="hamburger">
-            <span className="line" />
-            <span className="line" />
-            <span className="line" />
-          </div>
-        </div>
       </div>
       <div className="header">
         <div className="flex justify-end items-center h-full gap-2 mr-8">
