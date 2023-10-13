@@ -9,15 +9,21 @@ class ReportService {
       headers: authHeader(),
     });
   }
-  async getReportComment({ startIndex, size }) {
-    return await axios.get(API_URL + "reportComment" + `?page=${1}&size=${5}`, {
-      headers: authHeader(),
-    });
+  async getReportComment({ currentPage, pageSize }) {
+    return await axios.get(
+      API_URL + "reportComment" + `?page=${currentPage}&size=${pageSize}`,
+      {
+        headers: authHeader(),
+      }
+    );
   }
-  async getReportPost({ startIndex, size }) {
-    return await axios.get(API_URL + "reportPost" + `?page=${1}&size=${5}`, {
-      headers: authHeader(),
-    });
+  async getReportPost({ currentPage, pageSize }) {
+    return await axios.get(
+      API_URL + "reportPost" + `?page=${currentPage}&size=${pageSize}`,
+      {
+        headers: authHeader(),
+      }
+    );
   }
 }
 
