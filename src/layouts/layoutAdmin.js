@@ -20,7 +20,21 @@ export default function LayoutAdmin({ children }) {
       <Navbar user={user} setUser={setUser} />
       <div className="flex">
         <Sidebar />
-        {children}
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-xl-12 col-xxl-12">
+              <div className="row">
+                <div className="col-xl-12">
+                  <div className="card">
+                    <div className="card-header d-block pb-0 border-0">
+                      {children}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Footer />

@@ -31,4 +31,20 @@ export const sidebarList = [
       },
     ],
   },
+  {
+    id: 3,
+    title: "Reports",
+    detail: [
+      {
+        id: 1,
+        title: "Report list",
+        url: "/admin/list-report",
+      },
+      {
+        id: 2,
+        title: "Post list",
+        url: "/admin/list-post",
+      },
+    ],
+  },
 ];
