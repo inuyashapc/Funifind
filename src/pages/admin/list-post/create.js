@@ -26,10 +26,10 @@ export default function CreatePost() {
 			}
 		}
 
-		// Ensure that you set the previewImages state to a new array with the current previews
+		// Set preview để người dùng xem trước ảnh
 		setPriviewImages([...previewImagesArray]);
 
-		// Update the images state to accumulate all selected images
+		// Set dữ liệu ảnh sẽ đăng.
 		setImagesState((prevImages) => [...prevImages, ...imagesData]);
 	};
 

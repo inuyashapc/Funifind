@@ -8,9 +8,13 @@ import img34 from "../../../../public/images/avatar/34.png";
 import io from "socket.io-client";
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
+import ReportModal from "./reportModal";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({ posts, setPosts }) {
+	//----------------------------------------------------------
+	// TrungNQ add phần thêm report
+	const [isModalOpen, setModalOpen] = useState(false);
 	//----------------------------------------------------------
 	/** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
 	const [socket, setSocket] = useState(null);
@@ -19,6 +23,14 @@ export default function PostListAccepted({ posts, setPosts }) {
 		const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
 		setSocket(newSocket);
 	}, []);
+
+	const openModal = () => {
+		setModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setModalOpen(false);
+	};
 
 	// Chạy khi socket change ( có dữ liệu chuyển từ server xuống );
 	useEffect(() => {
@@ -105,6 +117,7 @@ export default function PostListAccepted({ posts, setPosts }) {
 							</Link>
 						</h6>
 						<p className="fs-14">
+							{/* Display image in list post */}
 							{post?.images.map(image => (<div>
 								<img src={image.url} />
 							</div>))}
@@ -165,6 +178,18 @@ export default function PostListAccepted({ posts, setPosts }) {
 						<i className="fa fa-plus scale5 mr-3" />
 						Delete post
 					</button>
+					<button
+						className="btn btn-danger btn-md ml-auto"
+						onClick={openModal}
+					>
+						Report
+					</button>
+					<ReportModal
+						show={isModalOpen}
+						onHide={closeModal}
+						title="Report comment"
+						post={post}
+					/>
 				</div>
 			))}
 		</div>

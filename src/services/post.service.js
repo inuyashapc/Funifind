@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:8080/posts/";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const API_URL = `${BASE_URL}posts/`;
 
 class PostService {
   getAllPost() {
@@ -52,6 +53,7 @@ class PostService {
       headers: authHeader(),
     });
   }
+
 }
 
 export default new PostService();
