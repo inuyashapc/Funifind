@@ -14,10 +14,6 @@ import CommentReportList from "@/components/admin/reportedList/comment";
 
 export default function ListReport() {
   const [tab, setTab] = useState(1);
-  const [startIndex, setStartIndex] = useState(1);
-  const [reportPost, setReportPost] = useState();
-  const size = 5;
-  const [reportComment, setReportComment] = useState();
   const tabList = [
     {
       id: 1,
@@ -28,23 +24,6 @@ export default function ListReport() {
       title: "Comment list reported",
     },
   ];
-
-  const getReportComment = async () => {
-    try {
-      const result = await reportService.getReportComment({
-        startIndex,
-        size,
-      });
-      console.log("🚀 ========= resultCmt:", result.data.data.data);
-      setReportComment(result.data.data.data);
-      return result;
-    } catch (error) {
-      console.log("🚀 ========= error:", error);
-    }
-  };
-  useEffect(() => {
-    getReportComment();
-  }, []);
   return (
     <LayoutAdmin>
       <div className="card-header d-block pb-0 border-0">
@@ -64,12 +43,6 @@ export default function ListReport() {
               </button>
             </div>
           </div>
-          <Link
-            className="btn rounded btn-primary mb-3"
-            href={"list-post/create"}
-          >
-            Create post
-          </Link>
         </div>
         {tabList.map((item) => (
           <TabButton
