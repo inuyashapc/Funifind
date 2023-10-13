@@ -8,6 +8,15 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
+  getAllPostWithPagination({ currentPage, pageSize }) {
+    return axios.get(
+      API_URL + "list" + `?page=${currentPage}&size=${pageSize}`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+
   async createPost(content) {
     try {
       const response = await axios.post(
@@ -47,7 +56,6 @@ class PostService {
   }
 
   getPostDetails({ postId }) {
-    console.log("🚀 ========= postId1234:", postId);
     return axios.get(API_URL + postId, {
       headers: authHeader(),
     });

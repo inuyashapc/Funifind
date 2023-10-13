@@ -8,9 +8,17 @@ import img34 from "../../../../public/images/avatar/34.png";
 import io from "socket.io-client";
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
+import ReactPaginate from "react-paginate";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({ posts, setPosts }) {
+  console.log("🚀 ========= posts:", posts);
+  //Pagination
+  const pageSize = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPost, setTotalPost] = useState(1);
+  const [postPagination, setPostPagination] = useState();
+  console.log("🚀 ========= totalPost:", totalPost);
   //----------------------------------------------------------
   /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
   const [socket, setSocket] = useState(null);
@@ -80,6 +88,29 @@ export default function PostListAccepted({ posts, setPosts }) {
         });
     }
   };
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * pageSize) % totalPost;
+    console.log(
+      `User requested page number ${
+        event.selected + 1
+      }, which is offset ${newOffset}`
+    );
+    setCurrentPage(event.selected + 1);
+  };
+
+  useEffect(() => {
+    postService
+      .getAllPostWithPagination({ currentPage, pageSize })
+      .then((response) => {
+        console.log("🚀 ========= response:", response);
+        setTotalPost(response.data.totalPost);
+        setPostPagination(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [currentPage]);
+
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {posts?.map((post) => (
@@ -169,6 +200,46 @@ export default function PostListAccepted({ posts, setPosts }) {
           </button>
         </div>
       ))}
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        currentPage={currentPage}
+        onPageChange={handlePageClick}
+        className="flex gap-2 p-2"
+        pageRangeDisplayed={pageSize}
+        pageCount={
+          totalPost % pageSize === 0
+            ? totalPost / pageSize
+            : Math.floor(totalPost / pageSize) + 1
+        }
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+      />
+
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={pageSize}
+        marginPagesDisplayed={2}
+        pageCount={
+          totalPost % pageSize === 0
+            ? totalPost / pageSize
+            : Math.floor(totalPost / pageSize) + 1
+        }
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
     </div>
   );
 }
