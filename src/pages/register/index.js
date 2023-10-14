@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import authService from '../../services/auth.service';
 import Link from "next/link";
+import Image from "next/image";
+import logo from '../../../public/images/logo-full.png'
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -46,7 +48,7 @@ const RegistrationForm = () => {
                   <div className="auth-form">
                     <div className="text-center mb-3">
                       <Link href="/">
-                        <img src="images/logo-full.png" alt="" />
+                        <Image src={logo} alt="logo" />
                       </Link>
                     </div>
                     <h4 className="text-center mb-4 text-white">
