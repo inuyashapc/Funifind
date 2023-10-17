@@ -113,7 +113,7 @@ export default function PostReportList() {
               className="btn btn-primary light btn-md ml-auto"
               onClick={() => deletePost(post?._id)}
             >
-              <i className="fa fa-plus scale5 mr-3" />
+              <i className="fa fa-trash scale5 mr-3" />
               Delete post
             </button>
           </div>
