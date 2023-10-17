@@ -1,14 +1,70 @@
 import React from 'react'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 // import {} from '../../../public/images/profile'
 import Image from 'next/image'
 import logo from '../../../public/images/logo.png'
 import LayoutAdmin from '@/layouts/layoutAdmin'
 export default function Profiles() {
+
+    const router = useRouter();
+    const { id } = router.query;
+    const [user, setUser] = useState(null);
+    const [follows, setFollows] = useState(null);
+    // const token = localStorage.getItem('token');
+
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const response = await fetch(`http://localhost:8080/users/651e80aae098313889287a05`);
+            const userData = await response.json();
+            setUser(userData);
+        };
+        fetchUser();
+    }, []);
+
+    useEffect(() => {
+        const fetchFollows = async () => {
+            const token = localStorage.getItem('user');
+            
+            if (!token) {
+                // Handle the case when the token is not available
+                console.error('Token not found in localStorage');
+                return;
+            }
+    
+            const headers = {
+                'x-access-token': token,
+                'Content-Type': 'application/json',
+            };
+    
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+    
+            const response = await fetch(`http://localhost:8080/follows/${id}`, requestOptions);
+            const followsData = await response.json();
+            setFollows(followsData);
+            console.log(followsData);
+        };
+    
+        fetchFollows();
+    }, [id]);
+    
+    
+
+      
+
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+
+
     return (
         <LayoutAdmin>
             <div className="row">
-                <div className="col-lg-3"></div>
-                <div className="col-lg-9">
+                <div className="col-lg-12">
                     <div className="profile card card-body px-3 pt-3 pb-0">
                         <div className="profile-head">
                             <div className="photo-content">
@@ -24,29 +80,12 @@ export default function Profiles() {
                                 </div>
                                 <div className="profile-details">
                                     <div className="profile-name px-3 pt-2">
-                                        <h4 className="text-primary mb-0">Mitchell C. Shay</h4>
+                                        <h4 className="text-primary mb-0">{user.data.name}</h4>
                                     </div>
                                     <div className="profile-email px-2 pt-2">
-                                        <h4 className="text-muted mb-0">info@fpt.edu.vn</h4>
+                                        <h4 className="text-muted mb-0">{user.data.email}</h4>
                                         <p>FPT mail</p>
                                     </div>
-                                    {/* <div className='followers'>
-                                        <h3 className="m-b-0">150</h3>
-                                    <span>Followers</span>
-                                    </div>
-                                    <div className="mt-4">
-                                        <a href="javascript:void()" className="btn btn-primary mb-1 mr-1">
-                                            Follow
-                                        </a>
-                                        <a
-                                            href="javascript:void()"
-                                            className="btn btn-primary mb-1"
-                                            data-toggle="modal"
-                                            data-target="#sendMessageModal"
-                                        >
-                                            Send Message
-                                        </a>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -55,15 +94,14 @@ export default function Profiles() {
             </div>
 
             <div className="row">
-                <div className='col-xl-3'></div>
-                <div className="col-xl-3">
+                <div className="col-xl-4">
                     <div className="card">
                         <div className="card-body">
                             <div className="profile-statistics mb-5">
                                 <div className="text-center">
                                     <div className="row">
                                         <div className="col">
-                                            <h3 className="m-b-0">150</h3>
+                                        <h3 className="m-b-0">{follows?.totalFollowing}</h3>
                                             <span>Followers</span>
                                         </div>
                                     </div>
@@ -81,7 +119,6 @@ export default function Profiles() {
                                         </a>
                                     </div>
                                 </div>
-                                {/* Modal */}
                                 <div className="modal fade" id="sendMessageModal">
                                     <div className="modal-dialog modal-dialog-centered" role="document">
                                         <div className="modal-content">
@@ -91,203 +128,14 @@ export default function Profiles() {
                                                     <span>×</span>
                                                 </button>
                                             </div>
-                                            {/* <div className="modal-body">
-                                                <form className="comment-form">
-                                                    <div className="row">
-                                                        <div className="col-lg-6">
-                                                            <div className="form-group">
-                                                                <label className="text-black font-w600">
-                                                                    Name <span className="required">*</span>
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    defaultValue="Author"
-                                                                    name="Author"
-                                                                    placeholder="Author"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-6">
-                                                            <div className="form-group">
-                                                                <label className="text-black font-w600">
-                                                                    Email <span className="required">*</span>
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    defaultValue="Email"
-                                                                    placeholder="Email"
-                                                                    name="Email"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-12">
-                                                            <div className="form-group">
-                                                                <label className="text-black font-w600">
-                                                                    Comment
-                                                                </label>
-                                                                <textarea
-                                                                    rows={8}
-                                                                    className="form-control"
-                                                                    name="comment"
-                                                                    placeholder="Comment"
-                                                                    defaultValue={""}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-12">
-                                                            <div className="form-group mb-0">
-                                                                <input
-                                                                    type="submit"
-                                                                    defaultValue="Post Comment"
-                                                                    className="submit btn btn-primary"
-                                                                    name="submit"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="profile-blog mb-5">
-                                <h5 className="text-primary d-inline">Today Highlights</h5>
-                                <a href="javascript:void()" className="pull-right f-s-16">
-                                    More
-                                </a>
-                                <img
-                                    src="images/profile/1.jpg"
-                                    alt=""
-                                    className="img-fluid mt-4 mb-4 w-100"
-                                />
-                                <h4>
-                                    <a href="post-details.html" className="text-black">
-                                        Darwin Creative Agency Theme
-                                    </a>
-                                </h4>
-                                <p className="mb-0">
-                                    A small river named Duden flows by their place and supplies it with
-                                    the necessary regelialia. It is a paradisematic country, in which
-                                    roasted parts of sentences fly into your mouth.
-                                </p>
-                            </div> */}
-                            {/* <div className="profile-interest mb-5">
-                                <h5 className="text-primary d-inline">Interest</h5>
-                                <div className="row mt-4 sp4" id="lightgallery">
-                                    <a
-                                        href="images/profile/2.jpg"
-                                        data-exthumbimage="images/profile/2.jpg"
-                                        data-src="images/profile/2.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/2.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                    <a
-                                        href="images/profile/3.jpg"
-                                        data-exthumbimage="images/profile/3.jpg"
-                                        data-src="images/profile/3.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/3.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                    <a
-                                        href="images/profile/4.jpg"
-                                        data-exthumbimage="images/profile/4.jpg"
-                                        data-src="images/profile/4.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/4.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                    <a
-                                        href="images/profile/3.jpg"
-                                        data-exthumbimage="images/profile/3.jpg"
-                                        data-src="images/profile/3.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/3.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                    <a
-                                        href="images/profile/4.jpg"
-                                        data-exthumbimage="images/profile/4.jpg"
-                                        data-src="images/profile/4.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/4.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                    <a
-                                        href="images/profile/2.jpg"
-                                        data-exthumbimage="images/profile/2.jpg"
-                                        data-src="images/profile/2.jpg"
-                                        className="mb-1 col-lg-4 col-xl-3 col-sm-4 col-6"
-                                    >
-                                        <img src="images/profile/2.jpg" alt="" className="img-fluid" />
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="profile-news">
-                                <h5 className="text-primary d-inline">Our Latest News</h5>
-                                <div className="media pt-3 pb-3">
-                                    <img
-                                        src="images/profile/5.jpg"
-                                        alt="image"
-                                        className="mr-3 rounded"
-                                        width={75}
-                                    />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5">
-                                            <a href="post-details.html" className="text-black">
-                                                Collection of textile samples
-                                            </a>
-                                        </h5>
-                                        <p className="mb-0">
-                                            I shared this on my fb wall a few months back, and I thought.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="media pt-3 pb-3">
-                                    <img
-                                        src="images/profile/6.jpg"
-                                        alt="image"
-                                        className="mr-3 rounded"
-                                        width={75}
-                                    />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5">
-                                            <a href="post-details.html" className="text-black">
-                                                Collection of textile samples
-                                            </a>
-                                        </h5>
-                                        <p className="mb-0">
-                                            I shared this on my fb wall a few months back, and I thought.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="media pt-3 pb-3">
-                                    <img
-                                        src="images/profile/7.jpg"
-                                        alt="image"
-                                        className="mr-3 rounded"
-                                        width={75}
-                                    />
-                                    <div className="media-body">
-                                        <h5 className="m-b-5">
-                                            <a href="post-details.html" className="text-black">
-                                                Collection of textile samples
-                                            </a>
-                                        </h5>
-                                        <p className="mb-0">
-                                            I shared this on my fb wall a few months back, and I thought.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
                 </div>
-                <div className="col-xl-6">
+                <div className="col-xl-8">
                     <div className="card">
                         <div className="card-body">
                             <div className="profile-tab">
