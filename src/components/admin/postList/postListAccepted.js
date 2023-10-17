@@ -8,9 +8,17 @@ import img34 from "../../../../public/images/avatar/34.png";
 import io from "socket.io-client";
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
+import ReactPaginate from "react-paginate";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({ posts, setPosts }) {
+  console.log("🚀 ========= posts:", posts);
+  //Pagination
+  const pageSize = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPost, setTotalPost] = useState(1);
+  const [postPagination, setPostPagination] = useState();
+  console.log("🚀 ========= totalPost:", totalPost);
   //----------------------------------------------------------
   /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
   const [socket, setSocket] = useState(null);
@@ -80,20 +88,55 @@ export default function PostListAccepted({ posts, setPosts }) {
         });
     }
   };
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * pageSize) % totalPost;
+    console.log(
+      `User requested page number ${
+        event.selected + 1
+      }, which is offset ${newOffset}`
+    );
+    setCurrentPage(event.selected + 1);
+  };
+
+  useEffect(() => {
+    postService
+      .getAllPostWithPagination({ currentPage, pageSize })
+      .then((response) => {
+        console.log("🚀 ========= response:", response);
+        setTotalPost(response.data.totalPost);
+        setPostPagination(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [currentPage]);
+
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
-      {posts?.map((post) => (
+      {postPagination?.map((post) => (
         <div
           key={post?._id}
           className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
         >
           <Link href="/admin/list-post/detail">
-            <Image
+            <img
+              src={post?.images[0]?.url}
+              className="w-[120px] h-[135px] mr-4"
+              alt="logo"
+            />
+            {/* <Image
               className="rounded mr-3 mb-md-0 mb-3"
               src={img5}
               width={120}
               alt=""
-            />
+            /> */}
+            {/* <Image
+              className="rounded mr-3 mb-md-0 mb-3"
+              src={post?.images.length != 0 ? post?.images[0]?.url : img5}
+              width={120}
+              height={120}
+              alt=""
+            /> */}
           </Link>
           <div className="media-body col-lg-8 pl-0">
             <h6 className="fs-16 font-w600">
@@ -104,13 +147,6 @@ export default function PostListAccepted({ posts, setPosts }) {
                 {post?.content}
               </Link>
             </h6>
-            <p className="fs-14">
-              {post?.images.map((image, index) => (
-                <div key={index}>
-                  <img src={image.url} />
-                </div>
-              ))}
-            </p>
             <div className="d-flex flex-wrap align-items-center">
               <div className="d-flex mb-sm-2 mb-3 pr-3 mr-auto align-items-center">
                 <Image
@@ -169,6 +205,30 @@ export default function PostListAccepted({ posts, setPosts }) {
           </button>
         </div>
       ))}
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={pageSize}
+        marginPagesDisplayed={2}
+        pageCount={
+          totalPost % pageSize === 0
+            ? totalPost / pageSize
+            : Math.floor(totalPost / pageSize) + 1
+        }
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
     </div>
   );
 }

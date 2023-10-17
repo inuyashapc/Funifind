@@ -18,16 +18,35 @@ export default function LayoutAdmin({ children }) {
   return user?.isAdmin ? (
     <div>
       <Navbar user={user} setUser={setUser} />
-      <Sidebar />
-      {children}
+      <div className="flex">
+        <Sidebar />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-xl-12 col-xxl-12">
+              <div className="row">
+                <div className="col-xl-12">
+                  <div className="card">
+                    <div className="card-header d-block pb-0 border-0">
+                      {children}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Footer />
       <ToastContainer />
     </div>
   ) : (
     <div>
       <Navbar user={user} setUser={setUser} />
-      <Sidebar />
-      <h4 className="text-center">You do not access this page</h4>
+      <div className="flex mt-4">
+        <Sidebar />
+        <h4>Only admins have permission to view</h4>
+      </div>
       <Footer />
     </div>
   );

@@ -10,7 +10,10 @@ export default function Login() {
     password: "",
   });
   const router = useRouter();
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState({
+    email: "",
+    password: "",
+  });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -30,10 +33,17 @@ export default function Login() {
           .then(() => {
             router.push("/");
           })
-          .catch((error) => {
-            console.log("error: ", error);
-          })
-      : setMessage("Khong phai dinh dang mail @fpt.edu.vn");
+          .catch((error) =>
+            setMessage({
+              ...message,
+              email: "",
+              password: "Nhap password lai",
+            })
+          )
+      : setMessage({
+          ...message,
+          email: "Khong phai dinh dang mail @fpt.edu.vn",
+        });
   };
   return (
     <div className="authincation h-100">
@@ -65,7 +75,11 @@ export default function Login() {
                           value={formData.email}
                           onChange={handleInputChange}
                         />
-                        <small className="text-red-400">{message}</small>
+                        {message.email && (
+                          <small className="text-red-400">
+                            {message.email}
+                          </small>
+                        )}
                       </div>
                       <div className="form-group">
                         <label className="mb-1 text-white">
@@ -79,6 +93,11 @@ export default function Login() {
                           value={formData.password}
                           onChange={handleInputChange}
                         />
+                        {message.password && (
+                          <small className="text-red-400">
+                            {message.password}
+                          </small>
+                        )}
                       </div>
                       <div className="form-row d-flex justify-content-between mt-4 mb-2">
                         <div className="form-group">
@@ -100,9 +119,9 @@ export default function Login() {
                           </div>
                         </div>
                         <div className="form-group">
-                          <a className="text-white" href="./forgot-password">
+                          <Link className="text-white" href="./forgot-password">
                             Forgot Password?
-                          </a>
+                          </Link>
                         </div>
                       </div>
                       <div className="text-center">
