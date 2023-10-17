@@ -21,13 +21,13 @@ export const sidebarList = [
     detail: [
       {
         id: 1,
-        title: "Post list",
-        url: "/admin/list-post",
+        title: "User list",
+        url: "/admin/list-user",
       },
       {
         id: 2,
-        title: "Post list",
-        url: "/admin/list-post",
+        title: "User banned list",
+        url: "/admin/list-user-banned",
       },
     ],
   },
@@ -37,7 +37,7 @@ export const sidebarList = [
     detail: [
       {
         id: 1,
-        title: "Report list",
+        title: "Report post list",
         url: "/admin/list-report",
       },
       {

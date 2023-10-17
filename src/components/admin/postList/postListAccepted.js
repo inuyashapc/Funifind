@@ -192,15 +192,15 @@ export default function PostListAccepted({ posts, setPosts }) {
             ))}
             {/* Tạo comment */}
             <form className="" onSubmit={(e) => handleComment(e, post._id)}>
-              <input type="text" name="content" />
-              <button>Submit</button>
+              <input className="border border-black rounded-md p-2 me-2" type="text" name="content" />
+              <button className="border bg-blue-500 rounded-md p-2 text-white">Comment</button>
             </form>
           </div>
           <button
             className="btn btn-primary light btn-md ml-auto"
             onClick={() => deletePost(post?._id)}
           >
-            <i className="fa fa-plus scale5 mr-3" />
+            <i className="fa fa-trash scale5 mr-3" />
             Delete post
           </button>
         </div>
