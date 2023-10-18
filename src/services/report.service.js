@@ -9,17 +9,26 @@ class ReportService {
       headers: authHeader(),
     });
   }
-  async getReportComment({ currentPage, pageSize }) {
+  async getReportComment({ currentPage, pageSize, searchString }) {
     return await axios.get(
-      API_URL + "reportComment" + `?page=${currentPage}&size=${pageSize}`,
+      API_URL +
+        "reportComment" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
       {
         headers: authHeader(),
       }
     );
   }
-  async getReportPost({ currentPage, pageSize }) {
+  async getReportPost({ currentPage, pageSize, searchString }) {
+    console.log("🚀 ========= searchString:", searchString);
     return await axios.get(
-      API_URL + "reportPost" + `?page=${currentPage}&size=${pageSize}`,
+      API_URL +
+        "reportPost" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
       {
         headers: authHeader(),
       }

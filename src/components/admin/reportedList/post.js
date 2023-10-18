@@ -7,8 +7,10 @@ import ReactPaginate from "react-paginate";
 import reportService from "@/services/report.service";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
+import postService from "@/services/post.service";
+import { toast } from "react-toastify";
 
-export default function PostReportList() {
+export default function PostReportList({ searchString }) {
   const [reportPost, setReportPost] = useState();
   const [totalReportPost, setTotalReportPost] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +25,9 @@ export default function PostReportList() {
       const result = await reportService.getReportPost({
         currentPage,
         pageSize,
+        searchString,
       });
+      console.log("🚀 ========= result:", result.data.data.data);
       setReportPost(result.data.data.data);
       setTotalReportPost(result.data.data.totalReport);
       return result;
@@ -33,9 +37,33 @@ export default function PostReportList() {
   };
 
   useEffect(() => {
-    getReportPost({ currentPage, pageSize });
-  }, [currentPage]);
+    getReportPost();
+  }, [currentPage, searchString]);
 
+  const deletePost = (postID) => {
+    if (window.confirm("Are you sure to delete this post? ")) {
+      postService
+        .deletePost(postID)
+        .then((response) => {
+          setReportPost((oldPost) =>
+            oldPost.filter((post) => post._id !== postID)
+          );
+          toast.success("Delete successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   return (
     <div>
       {reportPost?.map((post) => (
@@ -111,7 +139,7 @@ export default function PostReportList() {
             </div>
             <button
               className="btn btn-primary light btn-md ml-auto"
-              onClick={() => deletePost(post?._id)}
+              onClick={() => deletePost(post?.post)}
             >
               <i className="fa fa-trash scale5 mr-3" />
               Delete post

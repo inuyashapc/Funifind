@@ -1,12 +1,34 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
 import { toast } from "react-toastify";
-export default function PostListNeedAccept({ postPending, setPostPending }) {
+import ReactPaginate from "react-paginate";
+export default function PostListNeedAccept({ searchString }) {
+  const [postPending, setPostPending] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPost, setTotalPost] = useState();
+  const pageSize = 5;
+
+  const loadDataPost = () => {
+    postService
+      .getListPostPending({ currentPage, pageSize, searchString })
+      .then((res) => {
+        console.log("🚀 ========= res:", res);
+        setPostPending(res.data.listPostPending);
+        setTotalPost(res.data.totalPost);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    loadDataPost();
+  }, [currentPage, searchString]);
+
   const approvePost = (postID) => {
     postService
       .approve({ postID, isApprove: true })
@@ -24,6 +46,7 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
         setPostPending((listPost) =>
           listPost.filter((post) => post._id !== res.data.data._id)
         );
+        loadDataPost();
       })
       .catch((err) => {
         console.log(err);
@@ -52,6 +75,11 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
         console.log(err);
       });
   };
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected + 1);
+  };
+
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {postPending?.map((post) => (
@@ -133,6 +161,30 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
           </button>
         </div>
       ))}
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={pageSize}
+        marginPagesDisplayed={2}
+        pageCount={
+          totalPost % pageSize === 0
+            ? totalPost / pageSize
+            : Math.floor(totalPost / pageSize) + 1
+        }
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
     </div>
   );
 }
