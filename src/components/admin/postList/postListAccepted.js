@@ -2,23 +2,23 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 /** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
 import io from "socket.io-client";
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
 import ReactPaginate from "react-paginate";
+import { toast } from "react-toastify";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
-export default function PostListAccepted({ posts, setPosts }) {
-  console.log("🚀 ========= posts:", posts);
+export default function PostListAccepted({ posts, setPosts, searchString }) {
+  // console.log("🚀 ========= posts:", posts);
   //Pagination
   const pageSize = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState(1);
   const [postPagination, setPostPagination] = useState();
-  console.log("🚀 ========= totalPost:", totalPost);
+  // console.log("🚀 ========= totalPost:", totalPost);
   //----------------------------------------------------------
   /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
   const [socket, setSocket] = useState(null);
@@ -81,7 +81,20 @@ export default function PostListAccepted({ posts, setPosts }) {
       postService
         .deletePost(postID)
         .then((response) => {
-          setPosts((oldPost) => oldPost.filter((post) => post._id !== postID));
+          setPostPagination((oldPost) =>
+            oldPost.filter((post) => post._id !== postID)
+          );
+          toast.success("Delete successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          loadDataPost();
         })
         .catch((error) => {
           console.log(error);
@@ -89,27 +102,25 @@ export default function PostListAccepted({ posts, setPosts }) {
     }
   };
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * pageSize) % totalPost;
-    console.log(
-      `User requested page number ${
-        event.selected + 1
-      }, which is offset ${newOffset}`
-    );
     setCurrentPage(event.selected + 1);
   };
 
-  useEffect(() => {
+  const loadDataPost = () => {
     postService
-      .getAllPostWithPagination({ currentPage, pageSize })
+      .getAllPostWithPagination({ currentPage, pageSize, searchString })
       .then((response) => {
         console.log("🚀 ========= response:", response);
-        setTotalPost(response.data.totalPost);
-        setPostPagination(response.data.data);
+        setTotalPost(response?.data?.totalPost);
+        setPostPagination(response?.data?.data);
       })
       .catch((error) => {
-        console.log(error);
+        setPostPagination();
+        console.log(error.response.data.message);
       });
-  }, [currentPage]);
+  };
+  useEffect(() => {
+    loadDataPost();
+  }, [currentPage, searchString]);
 
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
@@ -192,8 +203,14 @@ export default function PostListAccepted({ posts, setPosts }) {
             ))}
             {/* Tạo comment */}
             <form className="" onSubmit={(e) => handleComment(e, post._id)}>
-              <input className="border border-black rounded-md p-2 me-2" type="text" name="content" />
-              <button className="border bg-blue-500 rounded-md p-2 text-white">Comment</button>
+              <input
+                className="border border-black rounded-md p-2 me-2"
+                type="text"
+                name="content"
+              />
+              <button className="border bg-blue-500 rounded-md p-2 text-white">
+                Comment
+              </button>
             </form>
           </div>
           <button

@@ -1,19 +1,13 @@
-import Image from "next/image";
-import Link from "next/link";
 import React, { useState } from "react";
-import { useEffect } from "react";
-import dayjs from "dayjs";
 
 import TabButton from "@/components/admin/tabButton";
 import LayoutAdmin from "@/layouts/layoutAdmin";
-import reportService from "@/services/report.service";
-import img5 from "../../../../public/images/menus/5.png";
-import img34 from "../../../../public/images/avatar/34.png";
 import PostReportList from "@/components/admin/reportedList/post";
 import CommentReportList from "@/components/admin/reportedList/comment";
 
 export default function ListReport() {
   const [tab, setTab] = useState(1);
+  const [search, setSearch] = useState();
   const tabList = [
     {
       id: 1,
@@ -24,6 +18,10 @@ export default function ListReport() {
       title: "Comment list reported",
     },
   ];
+  const handleSearch = (e) => {
+    console.log("Search", e.target.value);
+    setSearch(e.target.value);
+  };
   return (
     <LayoutAdmin>
       <div className="card-header d-block pb-0 border-0">
@@ -36,6 +34,7 @@ export default function ListReport() {
               type="text"
               className="form-control"
               placeholder="Search Menus here"
+              onChange={handleSearch}
             />
             <div className="input-group-append">
               <button className="btn btn-primary" type="button">
@@ -54,8 +53,8 @@ export default function ListReport() {
           />
         ))}
       </div>
-      {tab === 1 && <PostReportList />}
-      {tab === 2 && <CommentReportList />}
+      {tab === 1 && <PostReportList searchString={search} />}
+      {tab === 2 && <CommentReportList searchString={search} />}
     </LayoutAdmin>
   );
 }

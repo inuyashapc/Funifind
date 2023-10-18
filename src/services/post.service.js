@@ -8,9 +8,13 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
-  getAllPostWithPagination({ currentPage, pageSize }) {
+  getAllPostWithPagination({ currentPage, pageSize, searchString }) {
     return axios.get(
-      API_URL + "list" + `?page=${currentPage}&size=${pageSize}`,
+      API_URL +
+        "list" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
       {
         headers: authHeader(),
       }
@@ -39,10 +43,17 @@ class PostService {
     });
   }
 
-  getListPostPending() {
-    return axios.get(API_URL + "listApprove", {
-      headers: authHeader(),
-    });
+  getListPostPending({ currentPage, pageSize, searchString }) {
+    return axios.get(
+      API_URL +
+        "listPending" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
+      {
+        headers: authHeader(),
+      }
+    );
   }
 
   approve({ isApprove, postID }) {
