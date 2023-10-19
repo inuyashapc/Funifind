@@ -36,7 +36,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
         // Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
         if (response.data && setPosts) {
           setPosts((listPost) =>
-            listPost.map((post) => {
+            listPost?.map((post) => {
               if (post._id === response.data.post) {
                 // Check xem comment đã được thêm chưa, tránh duplicate
                 const isExisted = post.comments.find(
