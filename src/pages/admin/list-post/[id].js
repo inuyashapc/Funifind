@@ -9,13 +9,15 @@ import img2 from "../../../../public/images/product/2.jpg";
 import img3 from "../../../../public/images/product/3.jpg";
 import img4 from "../../../../public/images/product/4.jpg";
 import dayjs from "dayjs";
+import commentService from "@/services/comment.service";
+import { toast } from "react-toastify";
 
 export default function PostDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [postDetail, setPostDetail] = useState();
+  const [comment, setComment] = useState();
   console.log("🚀 ========= postDetail:", postDetail);
-  console.log("🚀 ========= id:", id);
   // const getPostDetails = async () => {
   //   try {
   //     const detail = await PostService.getPostDetails({ postId: id });
@@ -30,8 +32,49 @@ export default function PostDetail() {
   //   console.log("🚀 ========= result:", result);
   //   setDetail(result);
   // }, []);
+  console.log(
+    "🚀 ========= result1234:",
+    postDetail && postDetail[0]?.comments
+  );
+  const handleDeleteComment = async (commentID) => {
+    try {
+      const result = await commentService.deleteComment(commentID);
+      console.log("🚀 ========= result1234:", postDetail);
 
-  useEffect(() => {
+      toast.success("Delete successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      // setPostDetail((postDetail) => {
+      //   console.log("a", postDetail);
+      //   return (
+      //     postDetail &&
+      //     postDetail[0]?.comments?.filter(
+      //       (post) => post?._id !== result?.data?.data?.post
+      //     )
+      //   );
+      // });
+      setPostDetail((listPost) =>
+        listPost.map((post) => {
+          if (post._id === result?.data?.data?.post) {
+            post.comments = post.comments.filter(
+              (comment) => comment._id !== result?.data?.data?._id
+            );
+          }
+          return post;
+        })
+      );
+    } catch (error) {
+      console.log("🚀 ========= error:", error);
+    }
+  };
+  const DataDetailPost = () => {
     id &&
       PostService.getPostDetails({ postId: id })
         .then((res) => {
@@ -41,6 +84,9 @@ export default function PostDetail() {
         .catch((err) => {
           console.log(err);
         });
+  };
+  useEffect(() => {
+    DataDetailPost();
   }, [id]);
   return !postDetail ? (
     <LayoutAdmin>
@@ -72,33 +118,45 @@ export default function PostDetail() {
                         className="tab-pane fade show active"
                         id="first"
                       >
-                        <img src={postDetail[0]?.images[0].url} alt="img1" />
-                        <div className="row">
-                          <div className="col-3">
+                        {postDetail &&
+                        postDetail[0]?.images &&
+                        postDetail[0]?.images[0]?.url ? (
+                          <div>
                             <img
                               src={postDetail[0]?.images[0].url}
                               alt="img1"
                             />
+                            <div className="row"></div>
+
+                            <div className="col-3">
+                              <img
+                                src={postDetail[0]?.images[0].url}
+                                alt="img1"
+                              />
+                            </div>
+                            <div className="col-3">
+                              <img
+                                src={postDetail[0]?.images[0].url}
+                                alt="img1"
+                              />
+                            </div>
+                            <div className="col-3">
+                              <img
+                                src={postDetail[0]?.images[0].url}
+                                alt="img1"
+                              />
+                            </div>
+                            <div className="col-3">
+                              <img
+                                src={postDetail[0]?.images[0].url}
+                                alt="img1"
+                              />
+                            </div>
                           </div>
-                          <div className="col-3">
-                            <img
-                              src={postDetail[0]?.images[0].url}
-                              alt="img1"
-                            />
-                          </div>
-                          <div className="col-3">
-                            <img
-                              src={postDetail[0]?.images[0].url}
-                              alt="img1"
-                            />
-                          </div>
-                          <div className="col-3">
-                            <img
-                              src={postDetail[0]?.images[0].url}
-                              alt="img1"
-                            />
-                          </div>
-                        </div>
+                        ) : (
+                          <Image src={img2} alt="img2" className="img-fluid" />
+                        )}
+
                         {/* <Image src={img1} alt="img1" className="img-fluid" /> */}
                       </div>
                       <div
@@ -181,7 +239,7 @@ export default function PostDetail() {
               </thead>
               <tbody>
                 {postDetail[0]?.comments?.map((post, index) => (
-                  <tr key={post._id}>
+                  <tr key={post?._id}>
                     <td scope="row">{index + 1}</td>
                     <td>{post?.content}</td>
                     <td>{post?.user?.name}</td>
@@ -190,7 +248,10 @@ export default function PostDetail() {
                     </td>
                     <td className="text-success">{post?.status}</td>
                     <td>
-                      <button className="p-3 bg-danger text-white">
+                      <button
+                        className="p-3 bg-danger text-white"
+                        onClick={() => handleDeleteComment(post?._id)}
+                      >
                         Delete
                       </button>
                     </td>

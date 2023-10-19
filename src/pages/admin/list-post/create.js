@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 export default function CreatePost() {
   // Add for post images
+
   const [imagesState, setImagesState] = useState([]);
   const [previewImages, setPriviewImages] = useState([]);
 
@@ -43,17 +44,23 @@ export default function CreatePost() {
   };
 
   const uploadFilesHandler = async (postId) => {
+    const data = JSON.parse(localStorage.getItem("user"));
+    console.log(data);
     const formData = new FormData();
     for (let i = 0; i < imagesState.length; i++) {
       let file = imagesState[i];
       formData.append("file", file);
     }
     formData.append("postId", postId);
+    formData.append("userId", data.id);
     try {
-      const res = await fetch("http://localhost:8080/images/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL + "images/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       // const data = false;
