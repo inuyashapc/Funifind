@@ -20,7 +20,7 @@ export default function PostListAccepted({ posts, setPosts }) {
 	const [socket, setSocket] = useState(null);
 	// Kết nối tới sever socket
 	useEffect(() => {
-		const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
+		const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
 		setSocket(newSocket);
 	}, []);
 

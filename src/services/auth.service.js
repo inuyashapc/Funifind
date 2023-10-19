@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL + "users/";
 console.log("🚀 ========= API_URL:", API_URL);
 
 class AuthService {
@@ -12,7 +12,7 @@ class AuthService {
     });
     if (response.data.accessToken) {
       localStorage.setItem("user", JSON.stringify(response.data));
-    }
+    } 
     return response.data;
   }
 
