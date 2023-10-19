@@ -24,7 +24,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
   const [socket, setSocket] = useState(null);
   // Kết nối tới sever socket
   useEffect(() => {
-    const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER);
+    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
     setSocket(newSocket);
   }, []);
 
@@ -33,9 +33,10 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
     if (socket) {
       // Khi có một người comment, những người khác sẽ nhận được data của comment thông qua đây
       socket.on("getComment", (response) => {
+        console.log(response.data);
         // Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
         if (response.data && setPosts) {
-          setPosts((listPost) =>
+          setPostPagination((listPost) =>
             listPost?.map((post) => {
               if (post._id === response.data.post) {
                 // Check xem comment đã được thêm chưa, tránh duplicate
@@ -67,6 +68,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
         if (response) {
           // Truyền dữ liệu lên socket để server biết có comment mới
           socket.emit("sendComment", response.data);
+          loadDataPost();
         }
       })
       .catch((error) => {
@@ -115,7 +117,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
       })
       .catch((error) => {
         setPostPagination();
-        console.log(error.response.data.message);
+        console.log(error?.response?.data?.message);
       });
   };
   useEffect(() => {

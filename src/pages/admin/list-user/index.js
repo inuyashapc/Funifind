@@ -19,7 +19,7 @@ export default function ListUser() {
         "x-access-token": token,
       };
 
-      fetch("http://localhost:8080/users", {
+      fetch(process.env.NEXT_PUBLIC_BASE_URL + "users", {
         method: "GET",
         headers: headers,
       })
@@ -65,7 +65,7 @@ export default function ListUser() {
               </tr>
             </thead>
             <tbody id="customers">
-              {listUser.map((user, index) => (
+              {listUser?.map((user, index) => (
                 <tr key={index} className="btn-reveal-trigger">
                   <td>
                     <div className="custom-control custom-checkbox mx-2">
@@ -90,7 +90,11 @@ export default function ListUser() {
                     </a>
                   </td>
                   <td className="py-2">
-                    <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${user.email}`}>{user.email}</a>
+                    <a
+                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${user.email}`}
+                    >
+                      {user.email}
+                    </a>
                   </td>
                   <td className="py-2">{user.phoneNumber}</td>
                   <td className="py-2 pl-5 wspace-no">{user.address}</td>
