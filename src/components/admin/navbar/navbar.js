@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
-import logo from "../../../../public/images/logo.png";
-import logoText from "../../../../public/images/logo-text.png";
+import logo from "../../../../public/images/FUniFind.png";
+// import logoText from "../../../../public/images/logo-text.png";
 import avt from "../../../../public/images/profile/17.jpg";
 import Link from "next/link";
 import Profiles from "@/pages/profiles";
@@ -16,8 +16,8 @@ export default function Navbar({ user, setUser }) {
       <div className="nav-header">
         <Link href="/" className="brand-logo">
           <Image className="logo-abbr" src={logo} alt="logo" />
-          <Image className="logo-compact" src={logoText} alt="logo" />
-          <Image className="brand-title" src={logoText} alt="logo" />
+          {/* <Image className="logo-compact" src={logoText} alt="logo" />
+          <Image className="brand-title" src={logoText} alt="logo" /> */}
         </Link>
       </div>
       <div className="header">
