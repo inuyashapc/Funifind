@@ -33770,7 +33770,10 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   min-height: 250px;
   width: 100%;
 }
-
+.hover-decoration:hover {
+ 
+  text-decoration: underline;
+}
 .profile .profile-photo {
   max-width: 100px;
   position: relative;
