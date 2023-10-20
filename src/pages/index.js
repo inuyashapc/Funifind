@@ -112,8 +112,8 @@ export default function Home() {
             </div>
           </div>
           <div className="row px-2">
-            {listPost?.map((post) => (
-              <div className="col-3 ">
+            {listPost?.map((post, index) => (
+              <div key={index} className="col-3 ">
                 <div
                   className="card px-0 pt-0 shadow  mb-5 bg-white rounded"
                   // style={{ width: "18rem" }}
