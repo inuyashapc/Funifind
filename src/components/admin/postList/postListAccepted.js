@@ -35,7 +35,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
       socket.on("getComment", (response) => {
         console.log(response.data);
         // Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
-        if (response.data && setPosts) {
+        if (response.data) {
           setPostPagination((listPost) =>
             listPost?.map((post) => {
               if (post._id === response.data.post) {
