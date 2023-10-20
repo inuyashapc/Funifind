@@ -28,8 +28,8 @@ export default function Navbar({ user, setUser }) {
       <div className="nav-header">
         <Link href="/" className="brand-logo">
           <Image className="logo-abbr" src={logo} alt="logo" />
-          <Image className="logo-compact" src={logoText} alt="logo" />
-          <Image className="brand-title" src={logoText} alt="logo" />
+          {/* <Image className="logo-compact" src={logoText} alt="logo" />
+          <Image className="brand-title" src={logoText} alt="logo" /> */}
         </Link>
       </div>
       <div className="header">
