@@ -1,16 +1,28 @@
 import Image from "next/image";
-import React from "react";
-import logo from "../../../../public/images/FUniFind.png";
-// import logoText from "../../../../public/images/logo-text.png";
+import React, { useEffect, useState } from "react";
+import logo from "../../../../public/images/logo.png";
+import logoText from "../../../../public/images/logo-text.png";
 import avt from "../../../../public/images/profile/17.jpg";
 import Link from "next/link";
-import Profiles from "@/pages/profiles";
+import Profiles from "@/pages/profiles/[id]";
 export default function Navbar({ user, setUser }) {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
     window.location.reload();
   };
+  const [id, setId] = useState();
+  useEffect(() => {
+    // Lấy dữ liệu từ Local Storage khi component được mount
+    const data = localStorage.getItem("user");
+
+    if (data) {
+      console.log("Dữ liệu từ Local Storage:", JSON.parse(data));
+      setId(JSON.parse(data).id);
+    } else {
+      console.log("Không có dữ liệu trong Local Storage.");
+    }
+  }, []);
   return (
     <div>
       <div className="nav-header">
@@ -25,7 +37,7 @@ export default function Navbar({ user, setUser }) {
           <Image className="rounded-circle" src={avt} alt="logo" />
           {user ? (
             <div>
-              <Link className="btn" href={"/profiles"}>
+              <Link className="btn" href={`/profiles/${id}`}>
                 {user?.name}
               </Link>
               <button className="btn" onClick={logout}>
@@ -34,7 +46,7 @@ export default function Navbar({ user, setUser }) {
             </div>
           ) : (
             <div className="flex gap-4">
-              <Link className="btn btn-primary" href={"/login"}>
+              <Link className="btn btn-primary" href={"/login/"}>
                 Login
               </Link>
               <Link className="btn btn-primary" href={"/register"}>
