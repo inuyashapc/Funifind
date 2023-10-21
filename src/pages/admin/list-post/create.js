@@ -106,41 +106,42 @@ export default function CreatePost() {
     }
   };
   return (
-    <LayoutAdmin>
-      <form onSubmit={handlePostSubmit}>
-        <div className="form-group">
-          <textarea
-            name="post"
-            className="form-control"
-            placeholder="What's on your mind?"
-            rows="3"
-            required
-          ></textarea>
-          <input
-            type="file"
-            onChange={selectFilesHandler}
-            accept="image/*"
-            multiple="multiple"
-          />
-          <div>
-            {previewImages.map((preview, index) => (
-              <img
-                key={index}
-                src={preview}
-                alt={`Preview ${index}`}
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  margin: "5px",
-                }}
-              />
-            ))}
-          </div>
+    <form onSubmit={handlePostSubmit}>
+      <div className="form-group">
+        <textarea
+          name="post"
+          className="form-control"
+          placeholder="What's on your mind?"
+          rows="3"
+          required
+        ></textarea>
+        <input
+          type="file"
+          onChange={selectFilesHandler}
+          accept="image/*"
+          multiple="multiple"
+        />
+        <div>
+          {previewImages.map((preview, index) => (
+            <img
+              key={index}
+              src={preview}
+              alt={`Preview ${index}`}
+              style={{
+                width: "100px",
+                height: "100px",
+                margin: "5px",
+              }}
+            />
+          ))}
         </div>
-        <button type="submit" className="btn btn-primary">
-          Post
-        </button>
-      </form>
-    </LayoutAdmin>
+      </div>
+      <button
+        type="submit"
+        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      >
+        Post
+      </button>
+    </form>
   );
 }
