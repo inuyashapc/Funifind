@@ -18,6 +18,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState(1);
   const [postPagination, setPostPagination] = useState();
+  console.log("🚀 ========= postPagination:", postPagination);
   // console.log("🚀 ========= totalPost:", totalPost);
   //----------------------------------------------------------
   /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
@@ -79,6 +80,7 @@ export default function PostListAccepted({ posts, setPosts, searchString }) {
   //----------------------------------------------------------
   //Xóa post
   const deletePost = (postID) => {
+    console.log("🚀 ========= postID:", postID);
     if (window.confirm("Are you sure to delete this post? ")) {
       postService
         .deletePost(postID)
