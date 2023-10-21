@@ -25,10 +25,6 @@ export default function PostList() {
     },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(e.target.search.value);
-  };
   const handleSearch = (e) => {
     console.log(e.target.value);
     setSearch(e.target.value);
@@ -40,21 +36,19 @@ export default function PostList() {
           <h4 className="text-black fs-20">Post list</h4>
         </div>
         <div className="input-group mb-3 diet-search mr-4">
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search Menus here"
-              onChange={handleSearch}
-              name="search"
-              id="search"
-            />
-            <div className="input-group-append">
-              <button className="btn btn-primary" type="submit">
-                <i className="fa fa-search" aria-hidden="true" />
-              </button>
-            </div>
-          </form>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search Menus here"
+            onChange={handleSearch}
+            name="search"
+            id="search"
+          />
+          <div className="input-group-append">
+            <button className="btn btn-primary" type="submit">
+              <i className="fa fa-search" aria-hidden="true" />
+            </button>
+          </div>
         </div>
         <Link
           className="btn rounded btn-primary mb-3"
