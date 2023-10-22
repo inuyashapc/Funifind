@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/admin/navbar/navbar";
 import LayoutAdmin from "@/layouts/layoutAdmin";
+import { toast } from "react-toastify";
 
 export default function ListUser() {
   const [listUser, setListUser] = useState([]);
 
-  useEffect(() => {
-    // Lấy dữ liệu từ local storage
-    const userData = JSON.parse(localStorage.getItem("user"));
+  function isUserInLocalStorage() {
+    const storageId = JSON.parse(localStorage.getItem('user'));
+    return storageId.id
+  }
 
-    // Trích xuất token từ userData
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
     const token = userData ? userData.accessToken : null;
 
-    // Kiểm tra xem có token hay không
     if (token) {
-      // Tạo một đối tượng chứa các thông tin cần đính kèm vào header của request
       const headers = {
         "x-access-token": token,
       };
@@ -34,7 +35,114 @@ export default function ListUser() {
       console.error("No token in local storage");
     }
   }, []);
-  console.log(listUser);
+
+  const handleIsActive = (id) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const token = userData ? userData.accessToken : null;
+    const requestBody = {
+      userId: id,
+    };
+
+    if (token) {
+      const headers = {
+        "x-access-token": token,
+        "Content-Type": "application/json",
+      };
+
+      fetch(process.env.NEXT_PUBLIC_BASE_URL + "users/changeActive", {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.isActive === true) {
+            toast.success("Active successfully", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          } else {
+            toast.warn("Deactive successfully", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Call API error: " + error);
+        });
+    } else {
+      console.error("No token in local storage");
+    }
+  };
+
+  const handleIsAdmin = (id) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const token = userData ? userData.accessToken : null;
+    const requestBody = {
+      userId: id,
+    };
+
+    if (token) {
+      const headers = {
+        "x-access-token": token,
+        "Content-Type": "application/json",
+      };
+
+      fetch(process.env.NEXT_PUBLIC_BASE_URL + "users/setAdmin", {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.isAdmin === true) {
+            toast.success(data.name + " is admin now", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          } else {
+            toast.warn(data.name + " is not admin now", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Call API error: " + error);
+        });
+    } else {
+      console.error("No token in local storage");
+    }
+  };
 
   return (
     <LayoutAdmin>
@@ -43,7 +151,7 @@ export default function ListUser() {
           <table className="table table-responsive-lg mb-0 table-striped">
             <thead>
               <tr>
-                <th className="">
+                {/* <th className="">
                   <div className="custom-control custom-checkbox mx-2">
                     <input
                       type="checkbox"
@@ -55,19 +163,19 @@ export default function ListUser() {
                       htmlFor="checkAll"
                     />
                   </div>
-                </th>
+                </th> */}
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th className="pl-5">Address</th>
-                <th>Active</th>
-                <th />
+                <th className="text-center">Active</th>
+                <th className="text-center">Admin</th>
               </tr>
             </thead>
             <tbody id="customers">
               {listUser?.map((user, index) => (
                 <tr key={index} className="btn-reveal-trigger">
-                  <td>
+                  {/* <td>
                     <div className="custom-control custom-checkbox mx-2">
                       <input
                         type="checkbox"
@@ -79,7 +187,7 @@ export default function ListUser() {
                         htmlFor={`checkbox${index}`}
                       />
                     </div>
-                  </td>
+                  </td> */}
                   <td className="py-3">
                     <a href="#">
                       <div className="media d-flex align-items-center">
@@ -98,22 +206,37 @@ export default function ListUser() {
                   </td>
                   <td className="py-2">{user.phoneNumber}</td>
                   <td className="py-2 pl-5 wspace-no">{user.address}</td>
-                  <td className="py-2">
-                    <input type="checkbox" defaultChecked={user.isActive} />
+                  <td className="py-2 text-center">
+                    {isUserInLocalStorage() == user._id ? (
+                      <input
+                        type="checkbox"
+                        defaultChecked={user.isActive}
+                        disabled
+                        className="opacity-30"
+                      />
+                    ) : (
+                      <input
+                        type="checkbox"
+                        defaultChecked={user.isActive}
+                        onClick={() => handleIsActive(user._id)}
+                      />
+                    )}
                   </td>
-                  <td className="py-2 text-right">
-                    <div className="dropdown">
-                      <div className="dropdown-menu dropdown-menu-right border py-0">
-                        <div className="py-2">
-                          <a className="dropdown-item" href="#!">
-                            Edit
-                          </a>
-                          <a className="dropdown-item text-danger" href="#!">
-                            Delete
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                  <td className="py-2 text-center">
+                    {isUserInLocalStorage() == user._id ? (
+                      <input
+                        type="checkbox"
+                        defaultChecked={user.isAdmin}
+                        disabled
+                        className="opacity-30"
+                      />
+                    ) : (
+                      <input
+                        type="checkbox"
+                        defaultChecked={user.isAdmin}
+                        onClick={() => handleIsAdmin(user._id)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
