@@ -11,12 +11,14 @@ import img4 from "../../../../public/images/product/4.jpg";
 import dayjs from "dayjs";
 import commentService from "@/services/comment.service";
 import { toast } from "react-toastify";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 export default function PostDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [postDetail, setPostDetail] = useState();
   const [comment, setComment] = useState();
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   console.log("🚀 ========= postDetail:", postDetail);
   // const getPostDetails = async () => {
   //   try {
@@ -88,6 +90,9 @@ export default function PostDetail() {
   useEffect(() => {
     DataDetailPost();
   }, [id]);
+  const handleChange = (e) => {
+    console.log("data", e);
+  };
   return !postDetail ? (
     <LayoutAdmin>
       <h4 className="text-center">Loading</h4>
@@ -122,55 +127,33 @@ export default function PostDetail() {
                         postDetail[0]?.images &&
                         postDetail[0]?.images[0]?.url ? (
                           <div>
-                            <img
-                              src={postDetail[0]?.images[0].url}
-                              alt="img1"
-                            />
-                            <div className="row"></div>
-
-                            <div className="col-3">
-                              <img
-                                src={postDetail[0]?.images[0].url}
-                                alt="img1"
-                              />
-                            </div>
-                            <div className="col-3">
-                              <img
-                                src={postDetail[0]?.images[0].url}
-                                alt="img1"
-                              />
-                            </div>
-                            <div className="col-3">
-                              <img
-                                src={postDetail[0]?.images[0].url}
-                                alt="img1"
-                              />
-                            </div>
-                            <div className="col-3">
-                              <img
-                                src={postDetail[0]?.images[0].url}
-                                alt="img1"
-                              />
-                            </div>
+                            <Swiper
+                              rewind={true}
+                              spaceBetween={30}
+                              centeredSlides={true}
+                              autoplay={{
+                                delay: 2500,
+                                disableOnInteraction: false,
+                              }}
+                              pagination={{
+                                clickable: true,
+                              }}
+                              navigation={true}
+                              modules={[Autoplay, Pagination, Navigation]}
+                              className="mySwiper"
+                            >
+                              {postDetail[0]?.images?.map((item, index) => (
+                                <SwiperSlide key={index}>
+                                  <img src={item?.url} alt="img1" />
+                                </SwiperSlide>
+                              ))}
+                            </Swiper>
                           </div>
                         ) : (
                           <Image src={img2} alt="img2" className="img-fluid" />
                         )}
 
                         {/* <Image src={img1} alt="img1" className="img-fluid" /> */}
-                      </div>
-                      <div
-                        role="tabpanel"
-                        className="tab-pane fade"
-                        id="second"
-                      >
-                        <Image src={img2} alt="img2" className="img-fluid" />
-                      </div>
-                      <div role="tabpanel" className="tab-pane fade" id="third">
-                        <Image src={img3} alt="img3" className="img-fluid" />
-                      </div>
-                      <div role="tabpanel" className="tab-pane fade" id="for">
-                        <Image src={img4} alt="img4" className="img-fluid" />
                       </div>
                     </div>
                   </div>

@@ -97,8 +97,18 @@ class PostService {
       }
     );
   }
+  unBanPost(postId) {
+    console.log("🚀 ========= postId:", postId);
+    return axios.put(
+      API_URL + `unban`,
+      {
+        postID: postId,
+      },
+      {
+        headers: authHeader(),
+      }
+    );
+  }
 }
-
-
 
 export default new PostService();
