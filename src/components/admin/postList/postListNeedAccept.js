@@ -87,7 +87,7 @@ export default function PostListNeedAccept({ searchString }) {
           key={post?._id}
           className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
         >
-          <Link href="ecom-product-detail.html">
+          <Link href={`/admin/list-post/${post?._id}`}>
             <Image
               className="rounded mr-3 mb-md-0 mb-3"
               src={img5}
@@ -97,7 +97,7 @@ export default function PostListNeedAccept({ searchString }) {
           </Link>
           <div className="media-body col-lg-8 pl-0">
             <h6 className="fs-16 font-w600">
-              <Link href="ecom-product-detail.html" className="text-black">
+              <Link href={`/admin/list-post/${post?._id}`} className="text-black">
                 {post?.content}
               </Link>
             </h6>

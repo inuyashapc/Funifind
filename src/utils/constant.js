@@ -47,4 +47,20 @@ export const sidebarList = [
       },
     ],
   },
+  {
+    id: 4,
+    title: "Location",
+    detail: [
+      {
+        id: 1,
+        title: "Location list",
+        url: "/admin/list-location",
+      },
+      {
+        id: 2,
+        title: "Create location",
+        url: "/admin/list-location/create",
+      },
+    ],
+  },
 ];

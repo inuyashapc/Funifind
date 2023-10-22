@@ -9,19 +9,31 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
-  getAllPostWithPagination({ currentPage, pageSize, searchString }) {
+  getAllPostWithPagination({ currentPage, pageSize, searchString, location }) {
     return axios.get(
       API_URL +
         "list" +
         `?page=${currentPage}&size=${pageSize}&searchString=${
           searchString || ""
-        }`,
+        }&location=${location != "Khu vực" ? location : ""}`,
       {
         headers: authHeader(),
       }
     );
   }
 
+  getBannedPost({ currentPage, pageSize, searchString, location }) {
+    return axios.get(
+      API_URL +
+        "listBan" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }&location=${location != "Khu vực" ? location : ""}`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
   async createPost(content) {
     try {
       const response = await axios.post(
@@ -72,6 +84,21 @@ class PostService {
       headers: authHeader(),
     });
   }
+
+  banPost(postId) {
+    console.log("🚀 ========= postId:", postId);
+    return axios.put(
+      API_URL + `ban`,
+      {
+        postID: postId,
+      },
+      {
+        headers: authHeader(),
+      }
+    );
+  }
 }
+
+
 
 export default new PostService();
