@@ -20,6 +20,8 @@ export default function PostList() {
   const [locationList, setLocationList] = useState([
     { id: 1, name: "Khu vực" },
   ]);
+  console.log("🚀 ========= locationList:", locationList);
+
   const tabList = [
     {
       id: 1,
@@ -44,8 +46,16 @@ export default function PostList() {
     locationService
       .getAllLocation()
       .then((response) => {
+        const newLocations = response?.data;
+
+        const uniqueNewLocations = newLocations.filter((newLocation) => {
+          return !locationList.find(
+            (existingLocation) => existingLocation.name === newLocation.name
+          );
+        });
+
+        setLocationList([...locationList, ...uniqueNewLocations]);
         console.log("🚀 ========= response1234:", response?.data);
-        setLocationList(response?.data);
       })
       .catch((error) => {
         console.log(error?.response?.data?.message);
@@ -54,7 +64,7 @@ export default function PostList() {
 
   useEffect(() => {
     getAllLocation();
-  }, [search]);
+  }, []);
   const [selected, setSelected] = useState(locationList[0]);
   console.log("🚀 ========= selected:", selected?.name);
   return (
@@ -81,7 +91,7 @@ export default function PostList() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-40 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {locationList?.map((person, personIdx) => (
                     <Listbox.Option
                       key={personIdx}
@@ -124,16 +134,13 @@ export default function PostList() {
           <input
             type="text"
             className="form-control"
-            placeholder="Search Menus here"
+            placeholder="Search theo tên bài viết"
             onChange={handleSearch}
             name="search"
             id="search"
           />
         </div>
-        <Link
-          className="btn rounded btn-primary mb-3"
-          href={"list-post/create"}
-        >
+        <Link className="btn rounded btn-primary" href={"list-post/create"}>
           Create post
         </Link>
       </div>

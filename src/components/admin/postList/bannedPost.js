@@ -44,12 +44,12 @@ export default function BannedPost({ searchString, location }) {
     loadDataPost();
   }, [currentPage, searchString, location]);
   //ban post
-  const banPost = (postID) => {
+  const unBanPost = (postID) => {
     postService
-      .banPost(postID)
+      .unBanPost(postID)
       .then((response) => {
         console.log("🚀 ========= response:", response);
-        toast.success("Delete successfully", {
+        toast.success("Post active successfully", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -131,7 +131,7 @@ export default function BannedPost({ searchString, location }) {
           </div>
           <button
             className="btn btn-primary light btn-md ml-auto"
-            onClick={() => banPost(post?._id)}
+            onClick={() => unBanPost(post?._id)}
           >
             <i className="fa fa-check-circle scale5 mr-3" />
             Active post

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
@@ -44,7 +44,9 @@ export default function LocationDetail() {
     e.preventDefault();
     updateLocation(e.target.locationName.value);
   };
-  
+  useEffect(() => {
+    getDetailLocation();
+  }, []);
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit}>
@@ -132,7 +134,6 @@ export default function LocationDetail() {
           </div>
         </div>
       </form>
-      
     </LayoutAdmin>
   );
 }
