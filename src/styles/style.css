@@ -48163,4 +48163,15 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   color: #fff;
 }
 
+.about-me {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-me-left,
+.about-me-right {
+  flex: 1;
+}
+
+
 /*# sourceMappingURL=style.css.map */
