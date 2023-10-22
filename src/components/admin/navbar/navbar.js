@@ -63,7 +63,7 @@ export default function Navbar({ user, setUser }) {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    window.location.reload();
+    window.location.href = "/";
   };
 
   const [id, setId] = useState();
