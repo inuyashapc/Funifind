@@ -39,7 +39,7 @@ export default function Login({ setIsLoginModalOpen }) {
             setMessage({
               ...message,
               email: "",
-              password: "Nhap password lai",
+              password: error.response.data.message,
             });
             setLoading(false);
           })
