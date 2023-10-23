@@ -69,10 +69,10 @@ class PostService {
     );
   }
 
-  approve({ isApprove, postID }) {
+  approve({ isApprove, postID, refuseReason }) {
     return axios.post(
       API_URL + "approve",
-      { isApprove, postID },
+      { isApprove, postID, refuseReason },
       {
         headers: authHeader(),
       }

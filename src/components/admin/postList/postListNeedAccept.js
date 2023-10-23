@@ -1,18 +1,20 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
+import { Dialog, Transition } from "@headlessui/react";
 export default function PostListNeedAccept({ searchString }) {
   const [postPending, setPostPending] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState();
   const pageSize = 5;
-
+  let [isOpen, setIsOpen] = useState(false);
+  const [idPost, setIdPost] = useState();
   const loadDataPost = () => {
     postService
       .getListPostPending({ currentPage, pageSize, searchString })
@@ -53,9 +55,9 @@ export default function PostListNeedAccept({ searchString }) {
       });
   };
 
-  const rejectPost = (postID) => {
+  const rejectPost = (postID, refuseReason) => {
     postService
-      .approve({ postID, isApprove: false })
+      .approve({ postID, isApprove: false, refuseReason })
       .then((res) => {
         toast.warn("Reject successfully", {
           position: "bottom-right",
@@ -80,6 +82,21 @@ export default function PostListNeedAccept({ searchString }) {
     setCurrentPage(event.selected + 1);
   };
 
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal(id) {
+    setIdPost(id);
+    setIsOpen(true);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    rejectPost(idPost, e.target.banPost.value);
+    setIsOpen(false);
+    console.log("🚀 ========= e:", e.target.banPost.value);
+  };
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {postPending?.map((post) => (
@@ -97,7 +114,10 @@ export default function PostListNeedAccept({ searchString }) {
           </Link>
           <div className="media-body col-lg-8 pl-0">
             <h6 className="fs-16 font-w600">
-              <Link href={`/admin/list-post/${post?._id}`} className="text-black">
+              <Link
+                href={`/admin/list-post/${post?._id}`}
+                className="text-black"
+              >
                 {post?.content}
               </Link>
             </h6>
@@ -155,12 +175,70 @@ export default function PostListNeedAccept({ searchString }) {
           </button>
           <button
             className="btn btn-danger light btn-md ml-auto"
-            onClick={() => rejectPost(post?._id)}
+            onClick={() => openModal(post?._id)}
           >
             Reject
           </button>
         </div>
       ))}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center bg-blue-200 bg-opacity-80">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Nội dung của khóa bài viết
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <form onSubmit={handleSubmit}>
+                      <textarea
+                        className="border w-full"
+                        name="banPost"
+                        id="banPost"
+                        placeholder="Nhập nội dung"
+                        required
+                        rows={8}
+                      ></textarea>
+                      <div className="mt-4">
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}

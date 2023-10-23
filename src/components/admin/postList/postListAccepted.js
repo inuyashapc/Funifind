@@ -23,7 +23,6 @@ export default function PostListAccepted({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState(1);
   const [postPagination, setPostPagination] = useState();
-  console.log("🚀 ========= postPagination:", postPagination);
   const [locationList, setLocationList] = useState();
   // console.log("🚀 ========= totalPost:", totalPost);
   //----------------------------------------------------------
@@ -165,8 +164,16 @@ export default function PostListAccepted({
         postPagination?.map((post) => (
           <div
             key={post?._id}
-            className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
+            className={`media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list relative p-6 rounded-xl ${
+              post?.new && "bg-blue-200 bg-opacity-75"
+            }`}
           >
+            {post?.new && (
+              <span class="badge badge-secondary absolute -left-4 top-0">
+                Unread
+              </span>
+            )}
+
             <Link href={`/admin/list-post/${post?._id}`}>
               <img
                 src={post?.images[0]?.url}

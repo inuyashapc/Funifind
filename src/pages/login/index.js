@@ -1,10 +1,10 @@
 import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import logoFull from "../../../public/images/logo-full.png";
 import FUniFind from "../../../public/images/FUniFind.png";
 import authService from "../../services/auth.service";
-import { useRouter } from "next/router";
-import Link from "next/link";
 export default function Login({ setIsLoginModalOpen }) {
   const [formData, setFormData] = useState({
     email: "",
