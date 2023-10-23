@@ -10,6 +10,7 @@ export default function Login({ setIsLoginModalOpen }) {
     password: "",
   });
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
     email: "",
     password: "",
@@ -26,23 +27,26 @@ export default function Login({ setIsLoginModalOpen }) {
     e.preventDefault();
     const { email, password } = formData;
     console.log("check", checkEmail(email));
+    setLoading(true);
     checkEmail(email)
       ? authService
           .login(formData)
           .then(() => {
             router.reload();
           })
-          .catch((error) =>
+          .catch((error) => {
             setMessage({
               ...message,
               email: "",
               password: "Nhap password lai",
-            })
-          )
-      : setMessage({
+            });
+            setLoading(false);
+          })
+      : (setMessage({
           ...message,
           email: "Khong phai dinh dang mail @fpt.edu.vn",
-        });
+        }),
+        setLoading(false));
   };
   return (
     <div className="auth-form">
@@ -112,6 +116,12 @@ export default function Login({ setIsLoginModalOpen }) {
         </div>
         <div className="text-center">
           <button type="submit" className="btn bg-white text-primary btn-block">
+            {loading && (
+              <button type="button">
+                <i class="animate-spin fa fa-spinner fa-spin"></i>
+                Processing...
+              </button>
+            )}
             Sign Me In
           </button>
         </div>

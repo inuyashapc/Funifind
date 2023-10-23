@@ -1,7 +1,5 @@
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import postService from "@/services/post.service";
 import LayoutAdmin from "@/layouts/layoutAdmin";
 import PostListAccepted from "@/components/admin/postList/postListAccepted";
 import PostListNeedAccept from "@/components/admin/postList/postListNeedAccept";
@@ -18,7 +16,7 @@ export default function PostList() {
   const [search, setSearch] = useState();
 
   const [locationList, setLocationList] = useState([
-    { id: 1, name: "Khu vực" },
+    { _id: 1, name: "Khu vực" },
   ]);
   console.log("🚀 ========= locationList:", locationList);
 
@@ -160,7 +158,7 @@ export default function PostList() {
           posts={posts}
           setPosts={setPosts}
           searchString={search}
-          location={selected?.name}
+          location={selected?._id}
         />
       )}
       {tab === 2 && <PostListNeedAccept searchString={search} />}
