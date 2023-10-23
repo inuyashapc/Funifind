@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
+import FUniFind from "../../../public/images/FUniFind.png";
 import authService from "../../services/auth.service";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -10,6 +11,7 @@ export default function Login({ setIsLoginModalOpen }) {
     password: "",
   });
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
     email: "",
     password: "",
@@ -26,31 +28,34 @@ export default function Login({ setIsLoginModalOpen }) {
     e.preventDefault();
     const { email, password } = formData;
     console.log("check", checkEmail(email));
+    setLoading(true);
     checkEmail(email)
       ? authService
           .login(formData)
           .then(() => {
             router.reload();
           })
-          .catch((error) =>
+          .catch((error) => {
             setMessage({
               ...message,
               email: "",
-              password: "Nhap password lai",
-            })
-          )
-      : setMessage({
+              password: error.response.data.message,
+            });
+            setLoading(false);
+          })
+      : (setMessage({
           ...message,
           email: "Khong phai dinh dang mail @fpt.edu.vn",
-        });
+        }),
+        setLoading(false));
   };
   return (
     <div className="auth-form">
-      <div className="text-center mb-3">
+      {/* <div className="text-center mb-3">
         <Link href="/">
           <Image src={logoFull} alt="logo" />
         </Link>
-      </div>
+      </div> */}
       <h4 className="text-center mb-4 text-white">Sign in your account</h4>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -112,6 +117,12 @@ export default function Login({ setIsLoginModalOpen }) {
         </div>
         <div className="text-center">
           <button type="submit" className="btn bg-white text-primary btn-block">
+            {loading && (
+              <button type="button">
+                <i class="animate-spin fa fa-spinner fa-spin"></i>
+                Processing...
+              </button>
+            )}
             Sign Me In
           </button>
         </div>

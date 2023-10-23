@@ -4,11 +4,11 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import ReactPaginate from "react-paginate";
 
+import { toast } from "react-toastify";
 import reportService from "@/services/report.service";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
-import { toast } from "react-toastify";
 
 export default function PostReportList({ searchString }) {
   const [reportPost, setReportPost] = useState();
@@ -27,7 +27,6 @@ export default function PostReportList({ searchString }) {
         pageSize,
         searchString,
       });
-      console.log("🚀 ========= result:", result.data.data.data);
       setReportPost(result.data.data.data);
       setTotalReportPost(result.data.data.totalReport);
       return result;

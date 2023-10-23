@@ -9,19 +9,31 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
-  getAllPostWithPagination({ currentPage, pageSize, searchString }) {
+  getAllPostWithPagination({ currentPage, pageSize, searchString, location }) {
     return axios.get(
       API_URL +
         "list" +
         `?page=${currentPage}&size=${pageSize}&searchString=${
           searchString || ""
-        }`,
+        }&location=${location != 1 ? location : ""}`,
       {
         headers: authHeader(),
       }
     );
   }
 
+  getBannedPost({ currentPage, pageSize, searchString, location }) {
+    return axios.get(
+      API_URL +
+        "listBan" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }&location=${location != "Khu vực" ? location : ""}`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
   async createPost(content) {
     try {
       const response = await axios.post(
@@ -71,6 +83,31 @@ class PostService {
     return axios.get(API_URL + postId, {
       headers: authHeader(),
     });
+  }
+
+  banPost(postId) {
+    console.log("🚀 ========= postId:", postId);
+    return axios.put(
+      API_URL + `ban`,
+      {
+        postID: postId,
+      },
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+  unBanPost(postId) {
+    console.log("🚀 ========= postId:", postId);
+    return axios.put(
+      API_URL + `unban`,
+      {
+        postID: postId,
+      },
+      {
+        headers: authHeader(),
+      }
+    );
   }
 }
 

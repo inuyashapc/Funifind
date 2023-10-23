@@ -2,111 +2,93 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
+/** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
+import io from "socket.io-client";
+import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
-import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
-export default function PostListNeedAccept({ searchString }) {
-  const [postPending, setPostPending] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPost, setTotalPost] = useState();
+import { toast } from "react-toastify";
+import locationService from "@/services/location.service";
+/** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
+
+export default function BannedPost({ searchString, location }) {
+  //Pagination
   const pageSize = 5;
-
-  const loadDataPost = () => {
-    postService
-      .getListPostPending({ currentPage, pageSize, searchString })
-      .then((res) => {
-        console.log("🚀 ========= res:", res);
-        setPostPending(res.data.listPostPending);
-        setTotalPost(res.data.totalPost);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    loadDataPost();
-  }, [currentPage, searchString]);
-
-  const approvePost = (postID) => {
-    postService
-      .approve({ postID, isApprove: true })
-      .then((res) => {
-        toast.success("Approve successfully", {
-          position: "bottom-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        setPostPending((listPost) =>
-          listPost.filter((post) => post._id !== res.data.data._id)
-        );
-        loadDataPost();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const rejectPost = (postID) => {
-    postService
-      .approve({ postID, isApprove: false })
-      .then((res) => {
-        toast.warn("Reject successfully", {
-          position: "bottom-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        setPostPending((listPost) =>
-          listPost.filter((post) => post._id !== res.data.data._id)
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPost, setTotalPost] = useState(1);
+  const [postPagination, setPostPagination] = useState();
   const handlePageClick = (event) => {
     setCurrentPage(event.selected + 1);
   };
 
+  const loadDataPost = () => {
+    postService
+      .getBannedPost({
+        currentPage,
+        pageSize,
+        searchString,
+        location,
+      })
+      .then((response) => {
+        console.log("🚀 ========= response:", response);
+        setTotalPost(response?.data?.totalPost);
+        setPostPagination(response?.data?.data);
+      })
+      .catch((error) => {
+        setPostPagination();
+        console.log(error?.response?.data?.message);
+      });
+  };
+  useEffect(() => {
+    loadDataPost();
+  }, [currentPage, searchString, location]);
+  //ban post
+  const unBanPost = (postID) => {
+    postService
+      .unBanPost(postID)
+      .then((response) => {
+        console.log("🚀 ========= response:", response);
+        toast.success("Post active successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        loadDataPost();
+      })
+      .catch((error) => {
+        console.log(error?.response?.data?.message);
+      });
+  };
+
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
-      {postPending?.map((post) => (
+      {postPagination?.map((post) => (
         <div
           key={post?._id}
           className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
         >
-          <Link href={`/admin/list-post/${post?._id}`}>
-            <Image
-              className="rounded mr-3 mb-md-0 mb-3"
-              src={img5}
-              width={120}
-              alt=""
+          <Link href="/admin/list-post/detail">
+            <img
+              src={post?.images[0]?.url}
+              className="w-[120px] h-[135px] mr-4"
+              alt="logo"
             />
           </Link>
           <div className="media-body col-lg-8 pl-0">
             <h6 className="fs-16 font-w600">
-              <Link href={`/admin/list-post/${post?._id}`} className="text-black">
+              <Link
+                href={`/admin/list-post/${post?._id}`}
+                className="text-black"
+              >
                 {post?.content}
               </Link>
             </h6>
-            <p className="fs-14">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip
-            </p>
             <div className="d-flex flex-wrap align-items-center">
               <div className="d-flex mb-sm-2 mb-3 pr-3 mr-auto align-items-center">
                 <Image
@@ -148,16 +130,11 @@ export default function PostListNeedAccept({ searchString }) {
             </div>
           </div>
           <button
-            className="btn btn-success light btn-md ml-auto"
-            onClick={() => approvePost(post?._id)}
+            className="btn btn-primary light btn-md ml-auto"
+            onClick={() => unBanPost(post?._id)}
           >
-            Accept
-          </button>
-          <button
-            className="btn btn-danger light btn-md ml-auto"
-            onClick={() => rejectPost(post?._id)}
-          >
-            Reject
+            <i className="fa fa-check-circle scale5 mr-3" />
+            Active post
           </button>
         </div>
       ))}

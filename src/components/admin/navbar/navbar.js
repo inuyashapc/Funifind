@@ -1,6 +1,7 @@
 import Image from "next/image";
 import authService from "../../../services/auth.service";
 import React, { useEffect, useState, Fragment } from "react";
+import FUniFind from "../../../../public/images/FUniFind.png";
 import logo from "../../../../public/images/logo.png";
 import logoText from "../../../../public/images/logo-text.png";
 import avt from "../../../../public/images/profile/17.jpg";
@@ -66,7 +67,7 @@ export default function Navbar({ user, setUser }) {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    window.location.reload();
+    window.location.href = "/";
   };
 
   const [id, setId] = useState();
@@ -85,7 +86,7 @@ export default function Navbar({ user, setUser }) {
     <div>
       <div className="nav-header">
         <Link href="/" className="brand-logo">
-          <Image className="logo-abbr" src={logo} alt="logo" />
+          <Image className="logo-abbr" src={FUniFind} alt="logo" />
           {/* <Image className="logo-compact" src={logoText} alt="logo" />
           <Image className="brand-title" src={logoText} alt="logo" /> */}
         </Link>
