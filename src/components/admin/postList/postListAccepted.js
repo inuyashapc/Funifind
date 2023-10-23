@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate";
+import io from "socket.io-client";
 import img34 from "../../../../public/images/avatar/34.png";
 /** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
-import io from "socket.io-client";
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
-import ReactPaginate from "react-paginate";
-import { toast } from "react-toastify";
 import locationService from "@/services/location.service";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 

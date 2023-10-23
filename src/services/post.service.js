@@ -15,7 +15,7 @@ class PostService {
         "list" +
         `?page=${currentPage}&size=${pageSize}&searchString=${
           searchString || ""
-        }&location=${location != "Khu vực" ? location : ""}`,
+        }&location=${location != 1 ? location : ""}`,
       {
         headers: authHeader(),
       }
