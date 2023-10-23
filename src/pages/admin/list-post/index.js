@@ -18,7 +18,6 @@ export default function PostList() {
   const [locationList, setLocationList] = useState([
     { _id: 1, name: "Khu vực" },
   ]);
-  console.log("🚀 ========= locationList:", locationList);
 
   const tabList = [
     {
@@ -53,7 +52,6 @@ export default function PostList() {
         });
 
         setLocationList([...locationList, ...uniqueNewLocations]);
-        console.log("🚀 ========= response1234:", response?.data);
       })
       .catch((error) => {
         console.log(error?.response?.data?.message);
@@ -64,7 +62,6 @@ export default function PostList() {
     getAllLocation();
   }, []);
   const [selected, setSelected] = useState(locationList[0]);
-  console.log("🚀 ========= selected:", selected?.name);
   return (
     <LayoutAdmin>
       <div className="d-sm-flex flex-wrap align-items-center d-block mb-md-3 mb-0">
