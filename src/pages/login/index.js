@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import logoFull from "../../../public/images/logo-full.png";
+import FUniFind from "../../../public/images/FUniFind.png";
 import authService from "../../services/auth.service";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -50,11 +51,11 @@ export default function Login({ setIsLoginModalOpen }) {
   };
   return (
     <div className="auth-form">
-      <div className="text-center mb-3">
+      {/* <div className="text-center mb-3">
         <Link href="/">
           <Image src={logoFull} alt="logo" />
         </Link>
-      </div>
+      </div> */}
       <h4 className="text-center mb-4 text-white">Sign in your account</h4>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
