@@ -9,13 +9,19 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
-  getAllPostWithPagination({ currentPage, pageSize, searchString, location }) {
+  getAllPostWithPagination({
+    currentPage,
+    pageSize,
+    searchString,
+    location,
+    userId,
+  }) {
     return axios.get(
       API_URL +
         "list" +
         `?page=${currentPage}&size=${pageSize}&searchString=${
           searchString || ""
-        }&location=${location != 1 ? location : ""}`,
+        }&location=${location != 1 ? location : ""}&userId=${userId}`,
       {
         headers: authHeader(),
       }

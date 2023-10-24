@@ -13,6 +13,7 @@ import commentService from "@/services/comment.service";
 import { toast } from "react-toastify";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import readService from "@/services/read.service";
 export default function PostDetail() {
   const router = useRouter();
   const { id } = router.query;
@@ -80,7 +81,13 @@ export default function PostDetail() {
     id &&
       PostService.getPostDetails({ postId: id })
         .then((res) => {
-          console.log("🚀 ========= res:", res);
+          console.log("🚀 ========= res1234:", res);
+          if (res?.data?.data[0].read) {
+            readService
+              .read(id)
+              .then((res) => console.log("check", res))
+              .catch((error) => console.log("error", error));
+          }
           setPostDetail(res?.data?.data);
         })
         .catch((err) => {

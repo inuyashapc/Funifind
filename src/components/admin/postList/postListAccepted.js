@@ -9,7 +9,6 @@ import img34 from "../../../../public/images/avatar/34.png";
 /** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
-import locationService from "@/services/location.service";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({
@@ -17,6 +16,7 @@ export default function PostListAccepted({
   setPosts,
   searchString,
   location,
+  userId,
 }) {
   //Pagination
   const pageSize = 5;
@@ -121,6 +121,7 @@ export default function PostListAccepted({
         pageSize,
         searchString,
         location,
+        userId,
       })
       .then((response) => {
         console.log("🚀 ========= response:", response);
@@ -165,12 +166,12 @@ export default function PostListAccepted({
           <div
             key={post?._id}
             className={`media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list relative p-6 rounded-xl ${
-              post?.new && "bg-blue-200 bg-opacity-75"
+              !post?.read && "bg-blue-200 bg-opacity-75"
             }`}
           >
             {post?.new && (
               <span class="badge badge-secondary absolute -left-4 top-0">
-                Unread
+                New
               </span>
             )}
 
