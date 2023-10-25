@@ -5,11 +5,12 @@ import Sidebar from "@/components/admin/navbar/sidebar";
 import Footer from "@/components/admin/navbar/footer";
 import avt from "../../public/images/profile/16.jpg";
 import Image from "next/image";
-import { Dialog, Transition, Menu, Listbox } from "@headlessui/react";
-import { useEffect, useState, Fragment } from "react";
+import { Dialog, Transition, Menu, Listbox, Fragment } from "@headlessui/react";
+import { useEffect, useState } from "react";
 import CreatePost from "./admin/list-post/create";
 import IconCheck from "../../public/Icons/IconCheck";
 import IconChevronUpDown from "../../public/Icons/IconChevronUpDown";
+import locationService from "@/services/location.service";
 export default function Home() {
   const place = [
     { name: "All" },
@@ -22,6 +23,7 @@ export default function Home() {
   ];
   const [user, setUser] = useState();
   const [open, setOpen] = useState(false);
+  const [locationList,setLocationList] = useState([])
   const [selected, setSelected] = useState(place[0]);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -29,7 +31,29 @@ export default function Home() {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+  const getAllLocation = () => {
+    locationService
+      .getAllLocation()
+      .then((response) => {
+        const newLocations = response?.data;
 
+        const uniqueNewLocations = newLocations.filter((newLocation) => {
+          return !locationList.find(
+            (existingLocation) => existingLocation.name === newLocation.name
+          );
+        });
+
+        setLocationList([...locationList, ...uniqueNewLocations]);
+        console.log("🚀 ========= response1234:", response?.data);
+      })
+      .catch((error) => {
+        console.log(error?.response?.data?.message);
+      });
+  };
+
+  useEffect(() => {
+    getAllLocation();
+  }, []);
   const listPost = [
     {
       id: 1,
