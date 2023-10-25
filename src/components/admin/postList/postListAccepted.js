@@ -170,7 +170,7 @@ export default function PostListAccepted({
             }`}
           >
             {post?.new && (
-              <span class="badge badge-secondary absolute -left-4 top-0">
+              <span className="badge badge-secondary absolute -left-4 top-0">
                 New
               </span>
             )}

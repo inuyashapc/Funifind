@@ -8,11 +8,6 @@ export const sidebarList = [
         title: "Post list",
         url: "/admin/list-post",
       },
-      {
-        id: 2,
-        title: "Post list",
-        url: "/admin/list-post",
-      },
     ],
   },
   {
@@ -23,11 +18,6 @@ export const sidebarList = [
         id: 1,
         title: "User list",
         url: "/admin/list-user",
-      },
-      {
-        id: 2,
-        title: "User banned list",
-        url: "/admin/list-user-banned",
       },
     ],
   },
