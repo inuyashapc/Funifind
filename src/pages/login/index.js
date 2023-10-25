@@ -119,7 +119,7 @@ export default function Login({ setIsLoginModalOpen }) {
           <button type="submit" className="btn bg-white text-primary btn-block">
             {loading && (
               <button type="button">
-                <i class="animate-spin fa fa-spinner fa-spin"></i>
+                <i className="animate-spin fa fa-spinner fa-spin"></i>
                 Processing...
               </button>
             )}

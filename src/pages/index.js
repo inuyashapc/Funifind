@@ -86,8 +86,8 @@ export default function Home() {
       <div className="content row">
         <Sidebar />
         <div className="col container-fluid">
-          <div class=" justify-center">
-            <div class="card-header">
+          <div className=" justify-center">
+            <div className="card-header">
               <div className="flex items-center gap-2 justify-start">
                 <Image
                   className="rounded-circle"
@@ -120,7 +120,7 @@ export default function Home() {
                 >
                   <img
                     src="https://cosmic-nextjs-blog.vercel.app/_next/image?url=https%3A%2F%2Fimgix.cosmicjs.com%2Fbab6b030-ff1e-11ed-8fca-9b0db64c9b86-nasa-vhSz50AaFAs-unsplash.jpg%3Fw%3D1400%26auto%3Dformat&w=3840&q=75"
-                    class="card-img-top"
+                    className="card-img-top"
                     alt="f"
                   />
                   <div style={{ padding: "10px 00px 0px 10px" }}>
