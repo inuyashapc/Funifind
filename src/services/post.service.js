@@ -9,13 +9,19 @@ class PostService {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
 
-  getAllPostWithPagination({ currentPage, pageSize, searchString, location }) {
+  getAllPostWithPagination({
+    currentPage,
+    pageSize,
+    searchString,
+    location,
+    userId,
+  }) {
     return axios.get(
       API_URL +
         "list" +
         `?page=${currentPage}&size=${pageSize}&searchString=${
           searchString || ""
-        }&location=${location != 1 ? location : ""}`,
+        }&location=${location != 1 ? location : ""}&userId=${userId}`,
       {
         headers: authHeader(),
       }
@@ -69,10 +75,10 @@ class PostService {
     );
   }
 
-  approve({ isApprove, postID }) {
+  approve({ isApprove, postID, refuseReason }) {
     return axios.post(
       API_URL + "approve",
-      { isApprove, postID },
+      { isApprove, postID, refuseReason },
       {
         headers: authHeader(),
       }

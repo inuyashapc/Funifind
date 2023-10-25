@@ -23,7 +23,7 @@ export default function Home() {
   ];
   const [user, setUser] = useState();
   const [open, setOpen] = useState(false);
-  const [locationList,setLocationList] = useState([])
+  const [locationList, setLocationList] = useState([]);
   const [selected, setSelected] = useState(place[0]);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -193,8 +193,8 @@ export default function Home() {
           </Dialog>
         </Transition>
         <div className="col container-fluid">
-          <div class=" justify-center">
-            <div class="card-header">
+          <div className=" justify-center">
+            <div className="card-header">
               <div className="flex items-center gap-2 justify-start">
                 <Image
                   className="rounded-circle"

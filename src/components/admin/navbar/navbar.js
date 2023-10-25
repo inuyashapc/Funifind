@@ -17,6 +17,17 @@ export default function Navbar({ user, setUser }) {
   //Register modal
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const switchToLogin = () => {
+    setIsLoginModalOpen(true);
+    setIsRegisterModalOpen(false);
+  };
+
+  const switchToSignup = () => {
+    setIsLoginModalOpen(false);
+    setIsRegisterModalOpen(true);
+  };
+
   const openRegisterModal = () => {
     setIsRegisterModalOpen(true);
   };
@@ -267,9 +278,8 @@ export default function Navbar({ user, setUser }) {
                               Already have an account?{" "}
                               <a
                                 className="text-white font-bold"
-                                href="./login"
                               >
-                                Sign in
+                                <button onClick={switchToLogin}>Sign in</button>
                               </a>
                             </p>
                           </div>

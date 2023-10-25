@@ -6,6 +6,7 @@ import Image from "next/image";
 import logo from "../../../public/images/logo.png";
 import LayoutAdmin from "@/layouts/layoutAdmin";
 import img1 from "../../../public/images/profile/profile.png";
+import Link from "next/link";
 export default function Profiles() {
   const router = useRouter();
   const { id } = router.query;
@@ -156,14 +157,12 @@ export default function Profiles() {
                     >
                       Follow
                     </a>
-                    <a
-                      href="javascript:void()"
-                      className="btn btn-primary mb-1"
-                      data-toggle="modal"
-                      data-target="#sendMessageModal"
-                    >
+                    <Link
+                      href="/message/1"
+                      className="btn btn-primary mb-1">
                       Message
-                    </a>
+                    </Link>
+
                   </div>
                 </div>
                 <div className="modal fade" id="sendMessageModal">

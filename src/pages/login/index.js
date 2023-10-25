@@ -1,10 +1,10 @@
 import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import logoFull from "../../../public/images/logo-full.png";
 import FUniFind from "../../../public/images/FUniFind.png";
 import authService from "../../services/auth.service";
-import { useRouter } from "next/router";
-import Link from "next/link";
 export default function Login({ setIsLoginModalOpen }) {
   const [formData, setFormData] = useState({
     email: "",
@@ -119,7 +119,7 @@ export default function Login({ setIsLoginModalOpen }) {
           <button type="submit" className="btn bg-white text-primary btn-block">
             {loading && (
               <button type="button">
-                <i class="animate-spin fa fa-spinner fa-spin"></i>
+                <i className="animate-spin fa fa-spinner fa-spin"></i>
                 Processing...
               </button>
             )}

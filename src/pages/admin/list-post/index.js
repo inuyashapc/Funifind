@@ -18,8 +18,14 @@ export default function PostList() {
   const [locationList, setLocationList] = useState([
     { _id: 1, name: "Khu vực" },
   ]);
-  console.log("🚀 ========= locationList:", locationList);
-
+  const [userId, setUserId] = useState();
+  const getUserId = () => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const id = userData ? userData.id : null;
+    setUserId(id);
+    console.log("🚀 ========= id:", id);
+    return id;
+  };
   const tabList = [
     {
       id: 1,
@@ -53,7 +59,6 @@ export default function PostList() {
         });
 
         setLocationList([...locationList, ...uniqueNewLocations]);
-        console.log("🚀 ========= response1234:", response?.data);
       })
       .catch((error) => {
         console.log(error?.response?.data?.message);
@@ -63,8 +68,10 @@ export default function PostList() {
   useEffect(() => {
     getAllLocation();
   }, []);
+  useEffect(() => {
+    getUserId();
+  }, []);
   const [selected, setSelected] = useState(locationList[0]);
-  console.log("🚀 ========= selected:", selected?.name);
   return (
     <LayoutAdmin>
       <div className="d-sm-flex flex-wrap align-items-center d-block mb-md-3 mb-0">
@@ -159,6 +166,7 @@ export default function PostList() {
           setPosts={setPosts}
           searchString={search}
           location={selected?._id}
+          userId={userId}
         />
       )}
       {tab === 2 && <PostListNeedAccept searchString={search} />}
