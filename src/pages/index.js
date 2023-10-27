@@ -11,29 +11,28 @@ import CreatePost from "./admin/list-post/create";
 import IconCheck from "../../public/Icons/IconCheck";
 import IconChevronUpDown from "../../public/Icons/IconChevronUpDown";
 import locationService from "@/services/location.service";
+import postService from "@/services/post.service";
+import { toast, ToastContainer } from "react-toastify";
+
 export default function Home() {
-  const place = [
-    { name: "All" },
-    { name: "Alpha" },
-    { name: "Beta" },
-    { name: "Gama" },
-    { name: "Delta" },
-    { name: "Dom A" },
-    { name: "Nhà Xe" },
-  ];
   const [user, setUser] = useState();
   const [open, setOpen] = useState(false);
-  const [locationList, setLocationList] = useState([]);
-  const [selected, setSelected] = useState(place[0]);
+  const [locationList, setLocationList] = useState([
+    { _id: 1, name: "Khu vực" },
+  ]);
+
+  const [posts, setPosts] = useState();
+  const [selected, setSelected] = useState(locationList[0]);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      console.log("🚀 ========= user:", storedUser);
     }
   }, []);
   const getAllLocation = () => {
     locationService
-      .getAllLocation()
+      .getAllLocationGuess()
       .then((response) => {
         const newLocations = response?.data;
 
@@ -50,10 +49,27 @@ export default function Home() {
         console.log(error?.response?.data?.message);
       });
   };
-
+  const getListPost = () => {
+    postService
+      .getAllPostWithPagination({
+        currentPage: 1,
+        pageSize: 10,
+        location: selected?._id,
+      })
+      .then((response) => {
+        console.log("🚀 ========= response:", response);
+      })
+      .catch((error) => {
+        console.log(error?.response?.data?.message);
+      });
+  };
+  console.log(user);
   useEffect(() => {
     getAllLocation();
   }, []);
+  useEffect(() => {
+    getListPost();
+  }, [selected?._id]);
   const listPost = [
     {
       id: 1,
@@ -131,9 +147,22 @@ export default function Home() {
   function closeModal() {
     setOpen(false);
   }
-
+  const handleShowToast = (message) => {
+    toast.error(message, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
   function openModal() {
-    setOpen(true);
+    console.log("user", user);
+    if (user != undefined) setOpen(true);
+    else handleShowToast("Login before create new post");
   }
 
   return (
@@ -230,7 +259,7 @@ export default function Home() {
                       leaveTo="opacity-0"
                     >
                       <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {place.map((person, personIdx) => (
+                        {locationList?.map((person, personIdx) => (
                           <Listbox.Option
                             key={personIdx}
                             className={({ active }) =>
@@ -249,7 +278,7 @@ export default function Home() {
                                     selected ? "font-medium" : "font-normal"
                                   }`}
                                 >
-                                  {person.name}
+                                  {person?.name}
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
@@ -500,6 +529,7 @@ export default function Home() {
         </div>
       </div>
       <Footer />
+      <ToastContainer />
     </>
   );
 }
