@@ -27,6 +27,23 @@ class PostService {
       }
     );
   }
+  getAllPostUserWithPagination({
+    currentPage,
+    pageSize,
+    searchString,
+    location,
+  }) {
+    return axios.get(
+      API_URL +
+        "list" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }&location=${location != 1 ? location : ""}`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
 
   getBannedPost({ currentPage, pageSize, searchString, location }) {
     return axios.get(
