@@ -9,6 +9,7 @@ import img34 from "../../../../public/images/avatar/34.png";
 /** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
 import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
+import ReportModal from "./reportModal";
 /** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({
