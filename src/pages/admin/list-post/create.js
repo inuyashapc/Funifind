@@ -22,14 +22,6 @@ export default function CreatePost() {
         imagesData.push(imageData);
       }
 
-<<<<<<< HEAD
-		// Set preview để người dùng xem trước ảnh
-		setPriviewImages([...previewImagesArray]);
-
-		// Set dữ liệu ảnh sẽ đăng.
-		setImagesState((prevImages) => [...prevImages, ...imagesData]);
-	};
-=======
       if (file.type.startsWith("image/")) {
         previewImagesArray.push(URL.createObjectURL(file));
       }
@@ -37,7 +29,6 @@ export default function CreatePost() {
 
     // Ensure that you set the previewImages state to a new array with the current previews
     setPriviewImages([...previewImagesArray]);
->>>>>>> main
 
     // Update the images state to accumulate all selected images
     setImagesState((prevImages) => [...prevImages, ...imagesData]);
