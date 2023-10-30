@@ -902,6 +902,7 @@ pre code {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
+  padding-top: 8px;
 }
 
 .col {
@@ -13191,12 +13192,12 @@ a.active {
 }
 
 .nav-header .logo-abbr {
-  max-width: 52px;
+  max-width: 55%;
 }
 
 @media only screen and (max-width: 575px) {
   .nav-header .logo-abbr {
-    max-width: 40px;
+    max-width: 55%;
   }
 }
 
@@ -17152,7 +17153,6 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
 }
 
 .content-body {
-  margin-left: 21.563rem;
   z-index: 0;
   transition: all .2s ease;
 }
@@ -33771,7 +33771,10 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   min-height: 250px;
   width: 100%;
 }
-
+.hover-decoration:hover {
+ 
+  text-decoration: underline;
+}
 .profile .profile-photo {
   max-width: 100px;
   position: relative;
@@ -48160,5 +48163,16 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
 [data-theme-version="dark"] .footer .copyright p {
   color: #fff;
 }
+
+.about-me {
+  display: flex;
+  justify-content: space-between;
+}
+
+.about-me-left,
+.about-me-right {
+  flex: 1;
+}
+
 
 /*# sourceMappingURL=style.css.map */

@@ -1,4 +1,7 @@
 import React from 'react'
+import Image from 'next/image'
+import logo from '../../../public/images/logo.png'
+import FUniFind from "../../../public/images/FUniFind.png";
 
 export default function ForgotPassword() {
     return (
@@ -13,14 +16,14 @@ export default function ForgotPassword() {
                                         <div className="col-xl-12">
                                             <div className="auth-form">
                                                 <div className="text-center mb-3">
-                                                    <a href="index.html">
-                                                        <img src="images/logo-full.png" alt="" />
+                                                    <a href="./">
+                                                        <Image src={FUniFind} alt="logo" />
                                                     </a>
                                                 </div>
                                                 <h4 className="text-center mb-4 text-white">
                                                     Forgot Password
                                                 </h4>
-                                                <form action="index.html">
+                                                <form action="">
                                                     <div className="form-group">
                                                         <label className="text-white">
                                                             <strong>Email</strong>
@@ -28,7 +31,7 @@ export default function ForgotPassword() {
                                                         <input
                                                             type="email"
                                                             className="form-control"
-                                                            defaultValue="hello@example.com"
+                                                            placeholder="your-account@fpt.edu.vn"
                                                         />
                                                     </div>
                                                     <div className="text-center">

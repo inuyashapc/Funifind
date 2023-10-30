@@ -5,17 +5,36 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const API_URL = `${BASE_URL}reports/`;
 
 class ReportService {
-	reportPost(params) {
-		return axios.post(
-			API_URL + "reportPost",
-			params,
-			{
-				headers: authHeader(),
-			}
-		);
-	}
-
-
+  getPostDetails({ postId }) {
+    return axios.get(API_URL + postId, {
+      headers: authHeader(),
+    });
+  }
+  async getReportComment({ currentPage, pageSize, searchString }) {
+    return await axios.get(
+      API_URL +
+        "reportComment" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+  async getReportPost({ currentPage, pageSize, searchString }) {
+    console.log("🚀 ========= searchString:", searchString);
+    return await axios.get(
+      API_URL +
+        "reportPost" +
+        `?page=${currentPage}&size=${pageSize}&searchString=${
+          searchString || ""
+        }`,
+      {
+        headers: authHeader(),
+      }
+    );
+  }
 }
 
 export default new ReportService();

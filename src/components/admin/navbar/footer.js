@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="copyright">
         <p>
           Copyright © Designed &amp; Developed by{" "}
-          <a href="http://dexignzone.com/" target="_blank">
-            FUniFind
+          <a href="/" target="_blank">
+            Group 3
           </a>{" "}
           2023
         </p>

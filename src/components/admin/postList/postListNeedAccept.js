@@ -1,12 +1,36 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
 import { toast } from "react-toastify";
-export default function PostListNeedAccept({ postPending, setPostPending }) {
+import ReactPaginate from "react-paginate";
+import { Dialog, Transition } from "@headlessui/react";
+export default function PostListNeedAccept({ searchString }) {
+  const [postPending, setPostPending] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPost, setTotalPost] = useState();
+  const pageSize = 5;
+  let [isOpen, setIsOpen] = useState(false);
+  const [idPost, setIdPost] = useState();
+  const loadDataPost = () => {
+    postService
+      .getListPostPending({ currentPage, pageSize, searchString })
+      .then((res) => {
+        console.log("🚀 ========= res:", res);
+        setPostPending(res.data.listPostPending);
+        setTotalPost(res.data.totalPost);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    loadDataPost();
+  }, [currentPage, searchString]);
+
   const approvePost = (postID) => {
     postService
       .approve({ postID, isApprove: true })
@@ -24,15 +48,16 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
         setPostPending((listPost) =>
           listPost.filter((post) => post._id !== res.data.data._id)
         );
+        loadDataPost();
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const rejectPost = (postID) => {
+  const rejectPost = (postID, refuseReason) => {
     postService
-      .approve({ postID, isApprove: false })
+      .approve({ postID, isApprove: false, refuseReason })
       .then((res) => {
         toast.warn("Reject successfully", {
           position: "bottom-right",
@@ -52,6 +77,26 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
         console.log(err);
       });
   };
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected + 1);
+  };
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal(id) {
+    setIdPost(id);
+    setIsOpen(true);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    rejectPost(idPost, e.target.banPost.value);
+    setIsOpen(false);
+    console.log("🚀 ========= e:", e.target.banPost.value);
+  };
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {postPending?.map((post) => (
@@ -59,7 +104,7 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
           key={post?._id}
           className="media border-bottom mb-3 pb-3 d-lg-flex d-block menu-list"
         >
-          <Link href="ecom-product-detail.html">
+          <Link href={`/admin/list-post/${post?._id}`}>
             <Image
               className="rounded mr-3 mb-md-0 mb-3"
               src={img5}
@@ -69,7 +114,10 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
           </Link>
           <div className="media-body col-lg-8 pl-0">
             <h6 className="fs-16 font-w600">
-              <Link href="ecom-product-detail.html" className="text-black">
+              <Link
+                href={`/admin/list-post/${post?._id}`}
+                className="text-black"
+              >
                 {post?.content}
               </Link>
             </h6>
@@ -127,12 +175,94 @@ export default function PostListNeedAccept({ postPending, setPostPending }) {
           </button>
           <button
             className="btn btn-danger light btn-md ml-auto"
-            onClick={() => rejectPost(post?._id)}
+            onClick={() => openModal(post?._id)}
           >
             Reject
           </button>
         </div>
       ))}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center bg-blue-200 bg-opacity-80">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Nội dung của khóa bài viết
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <form onSubmit={handleSubmit}>
+                      <textarea
+                        className="border w-full"
+                        name="banPost"
+                        id="banPost"
+                        placeholder="Nhập nội dung"
+                        required
+                        rows={8}
+                      ></textarea>
+                      <div className="mt-4">
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={pageSize}
+        marginPagesDisplayed={2}
+        pageCount={
+          totalPost % pageSize === 0
+            ? totalPost / pageSize
+            : Math.floor(totalPost / pageSize) + 1
+        }
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
     </div>
   );
 }
