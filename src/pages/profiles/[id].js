@@ -7,6 +7,7 @@ import logo from "../../../public/images/logo.png";
 import LayoutAdmin from "@/layouts/layoutAdmin";
 import img1 from "../../../public/images/profile/profile.png";
 import Link from "next/link";
+import { useNavigate } from "react-router-dom";
 export default function Profiles() {
   const router = useRouter();
   const { id } = router.query;
@@ -28,7 +29,7 @@ export default function Profiles() {
           `${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`
         );
         const userData = await userResponse.json();
-        setUser(userData);
+        setUser(userData.data);
       };
 
       const fetchTotalFollowing = async () => {
@@ -158,7 +159,7 @@ export default function Profiles() {
                       Follow
                     </a>
                     <Link
-                      href="/message/1"
+                      href={`/message/${user?.email}`}
                       className="btn btn-primary mb-1">
                       Message
                     </Link>
