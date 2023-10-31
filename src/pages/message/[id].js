@@ -1,3 +1,4 @@
+import messageService from '@/services/message.service';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import io from "socket.io-client";
@@ -9,7 +10,8 @@ export default function Message() {
 	const [messages, setMessages] = useState([]);
 	const [userData, setUserData] = useState({})
 	const [messageInput, setMessageInput] = useState('');
-	const receiver = id;
+	const [listReceiver, setListReceiver] = useState([]);
+	const [receiver, setReceiver] = useState(id);
 	/** Bắt đầu phần Trung sửa kết nối socket và nhắn tin */
 	const [socket, setSocket] = useState(null);
 	// Kết nối tới sever socket
@@ -46,6 +48,15 @@ export default function Message() {
 
 	useEffect(() => {
 		if (userData?.accessToken) {
+			// Lấy list user mình đã từng nhắn tin với.
+			messageService.getListReceiver(userData.email)
+				.then(res => {
+					setListReceiver(res.data.listReceiver);
+				})
+				.catch(err => {
+					console.log(err);
+				})
+
 			const headers = {
 				"x-access-token": userData?.accessToken,
 			};
@@ -64,7 +75,7 @@ export default function Message() {
 		} else {
 			console.error("No token in local storage");
 		}
-	}, [userData]);
+	}, [userData, receiver]);
 
 	const sendMessage = () => {
 		if (userData?.accessToken) {
@@ -106,6 +117,11 @@ export default function Message() {
 	return (
 		<>
 			<div>
+				<div>
+					{listReceiver.map(receiver => (
+						<div className="bg-warning mb-2" onClick={() => setReceiver(receiver)}>{receiver}</div>
+					))}
+				</div>
 				<div className="w-full h-32" style={{ backgroundColor: "#00FFFF" }} />
 				<div className="container mx-auto" style={{ marginTop: "-128px" }}>
 					<div className="py-6 h-screen">
