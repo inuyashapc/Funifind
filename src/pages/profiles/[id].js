@@ -18,7 +18,7 @@ export default function Profiles() {
       address: '',
     },
   });
-  const [totalFollowing, setTotalFollowing] = useState(null);
+  const [totalFollowing, setTotalFollowing]=useState(null);
 
   useEffect(() => {
     // Check if the id is defined before making the API requests
