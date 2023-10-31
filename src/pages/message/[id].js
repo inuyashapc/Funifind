@@ -118,8 +118,8 @@ export default function Message() {
 		<>
 			<div>
 				<div>
-					{listReceiver.map(receiver => (
-						<div className="bg-warning mb-2" onClick={() => setReceiver(receiver)}>{receiver}</div>
+					{listReceiver.map((receiver, index) => (
+						<div key={`r${index}`} className="bg-warning mb-2" onClick={() => setReceiver(receiver)}>{receiver}</div>
 					))}
 				</div>
 				<div className="w-full h-32" style={{ backgroundColor: "#00FFFF" }} />
