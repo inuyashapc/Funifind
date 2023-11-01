@@ -57,14 +57,23 @@ class PostService {
       }
     );
   }
-  async createPost(content) {
+  async createPost(content, location) {
     try {
-      const response = await axios.post(
-        API_URL + "create",
-        { content },
-        { headers: authHeader() }
-      );
-      return response.data;
+      if (location != 1) {
+        const response = await axios.post(
+          API_URL + "create",
+          { content, location },
+          { headers: authHeader() }
+        );
+        return response.data;
+      } else {
+        const response = await axios.post(
+          API_URL + "create",
+          { content },
+          { headers: authHeader() }
+        );
+        return response.data;
+      }
     } catch (erorr) {
       return erorr;
     }
@@ -120,7 +129,7 @@ class PostService {
       }
     );
   }
-  unBanPost(postId) { 
+  unBanPost(postId) {
     console.log("🚀 ======= postId:", postId);
     return axios.put(
       API_URL + `unban`,

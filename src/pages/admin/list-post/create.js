@@ -10,7 +10,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 export default function CreatePost({ locationList }) {
   // Add for post images
   const [selected, setSelected] = useState(
-    locationList ? locationList[0] : [{ _id: 1, name: "Khu vực" }]
+    locationList ? locationList[0] : { _id: 1, name: "Khu vực" }
   );
   const [imagesState, setImagesState] = useState([]);
   const [previewImages, setPriviewImages] = useState([]);
@@ -50,7 +50,6 @@ export default function CreatePost({ locationList }) {
 
   const uploadFilesHandler = async (postId) => {
     const data = JSON.parse(localStorage.getItem("user"));
-    console.log(data);
     const formData = new FormData();
     for (let i = 0; i < imagesState.length; i++) {
       let file = imagesState[i];
@@ -99,13 +98,15 @@ export default function CreatePost({ locationList }) {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     const newPost = e.target.post.value; // Get the new post text from the form
+    console.log(selected);
     if (newPost) {
       postService
-        .createPost(newPost)
+        .createPost(newPost, selected?._id)
         .then(async (response) => {
           if (imagesState && imagesState.length > 0) {
-            await uploadFilesHandler(response.data._id);
+            await uploadFilesHandler(response?.data?._id);
           }
+
           handleShowToast(
             "Post created successfully! Waiting for admin approve."
           );
@@ -119,7 +120,7 @@ export default function CreatePost({ locationList }) {
   return (
     <form onSubmit={handlePostSubmit}>
       <div className="form-group">
-        <div>
+        <div className="mb-2">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative mt-1">
               <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -172,7 +173,7 @@ export default function CreatePost({ locationList }) {
         </div>
         <textarea
           name="post"
-          className="form-control"
+          className="form-control mb-2"
           placeholder="What's on your mind?"
           rows="3"
           required
