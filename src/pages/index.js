@@ -7,6 +7,9 @@ import avt from "../../public/images/profile/16.jpg";
 import Image from "next/image";
 import { Dialog, Transition, Menu, Listbox, Fragment } from "@headlessui/react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import authService from "@/services/auth.service";
 import CreatePost from "./admin/list-post/create";
 import locationService from "@/services/location.service";
 import commentService from "@/services/comment.service";
@@ -41,6 +44,18 @@ export default function Home() {
     const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
     setSocket(newSocket);
   }, []);
+  useEffect(() => {
+    if (user) {
+      const decodedToken = jwtDecode(user.accessToken);
+      let currentDate = new Date();
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        console.log("as");
+        authService.logout();
+        setUser(null);
+        window.location.reload();
+      }
+    }
+  }, [user]);
   useEffect(() => {
     if (socket) {
       // Khi có một người comment, những người khác sẽ nhận được data của comment thông qua đây
