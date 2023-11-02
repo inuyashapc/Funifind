@@ -9,7 +9,14 @@ export default function Profiles({ loggedInUserId }) {
   const router = useRouter();
   const { id } = router.query;
   const [userData, setUserData] = useState({});
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    data: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+    },
+  });
   const [totalFollowing, setTotalFollowing] = useState(null);
 
   useEffect(() => {
@@ -20,13 +27,13 @@ export default function Profiles({ loggedInUserId }) {
     } else {
       console.error('No user data in local storage');
     }
-
+  
     // Fetch user data and totalFollowing
     if (id && userData.accessToken) {
       const headers = {
         'x-access-token': userData.accessToken,
       };
-
+  
       // Fetch user data
       fetch(`${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`, {
         headers: headers, // Define headers here
@@ -43,7 +50,7 @@ export default function Profiles({ loggedInUserId }) {
         .catch((error) => {
           console.error('Error fetching user data:', error);
         });
-
+  
       // Fetch totalFollowing
       fetch(`${process.env.NEXT_PUBLIC_BASE_URL}follows/${id}`, {
         method: 'GET',
@@ -63,6 +70,7 @@ export default function Profiles({ loggedInUserId }) {
         });
     }
   }, [id, userData.accessToken]);
+  
 
 
   const handleChange = (event) => {
@@ -183,21 +191,9 @@ export default function Profiles({ loggedInUserId }) {
                       className="btn btn-primary mb-1">
                       Message
                     </Link>
+                  </div>
+                </div>
 
-                  </div>
-                </div>
-                <div className="modal fade" id="sendMessageModal">
-                  <div
-                    className="modal-dialog modal-dialog-centered"
-                    role="document"
-                  >
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Send Message</h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -242,9 +238,9 @@ export default function Profiles({ loggedInUserId }) {
                     </label>
                     <input
                       type="email"
-                      className="form-control"
+                      className="form-control cursor-not-allowed"
                       id="email"
-                      name="fptemail"
+                      name="email"
                       value={user?.data?.email}
                       onChange={handleChange}
                       disabled
@@ -267,8 +263,13 @@ export default function Profiles({ loggedInUserId }) {
               </div>
             </form>
             <div className="mt-4">
-              <button type="submit" className="btn btn-success mb-1">Update</button>
+              {user?.data?.id === loggedInUserId && (
+                <button type="submit" className="btn btn-success mb-1">
+                  Update
+                </button>
+              )}
             </div>
+
           </div>
         </div>
       </div>
