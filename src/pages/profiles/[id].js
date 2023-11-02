@@ -1,16 +1,14 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-// import {} from '../../../public/images/profile'
 import Image from "next/image";
-import logo from "../../../public/images/logo.png";
 import LayoutAdmin from "@/layouts/layoutAdmin";
 import img1 from "../../../public/images/profile/profile.png";
 import Link from "next/link";
-import { useNavigate } from "react-router-dom";
-export default function Profiles() {
+
+export default function Profiles({ loggedInUserId }) {
   const router = useRouter();
   const { id } = router.query;
+  const [userData, setUserData] = useState({});
   const [user, setUser] = useState({
     data: {
       name: '',
@@ -22,50 +20,44 @@ export default function Profiles() {
   const [totalFollowing, setTotalFollowing] = useState(null);
 
   useEffect(() => {
-    // Check if the id is defined before making the API requests
-    if (id) {
-      const fetchUser = async () => {
-        const userResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`
-        );
-        const userData = await userResponse.json();
-        setUser(userData.data);
-      };
-
-      const fetchTotalFollowing = async () => {
-        // Retrieve the token from Local Storage
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-          console.log("Dữ liệu từ Local Storage:", JSON.parse(token));
-          setId(JSON.parse(token).id);
-        } else {
-          console.log("Không có dữ liệu trong Local Storage.");
-          return
-        }
-
-        const totalFollowingResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}follows/${id}`,
-          {
-            method: 'GET',
-            headers: {
-              'x-access-token': token, // Use 'x-access-token' instead of 'Authorization'
-            },
-          }
-        );
-
-        if (totalFollowingResponse.ok) {
-          const totalFollowingData = await totalFollowingResponse.json();
-          setTotalFollowing(totalFollowingData.totalFollowing);
-        } else {
-          console.error('Failed to fetch total following');
-        }
-      };
-
-      fetchUser();
-      fetchTotalFollowing();
+    // Load user data from local storage
+    const userDataStr = localStorage.getItem('user');
+    if (userDataStr) {
+      setUserData(JSON.parse(userDataStr));
+    } else {
+      console.error('No user data in local storage');
     }
-  }, [id]);
+
+    // Fetch user data and totalFollowing
+    if (id && userData.accessToken) {
+      const headers = {
+        'x-access-token': userData.accessToken,
+      };
+
+      // Fetch user data
+      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`)
+        .then((response) => response.json())
+        .then((userData) => {
+          setUser(userData);
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+        });
+
+      // Fetch totalFollowing
+      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}follows/${id}`, {
+        method: 'GET',
+        headers: headers,
+      })
+        .then((response) => response.json())
+        .then((totalFollowingData) => {
+          setTotalFollowing(totalFollowingData.totalFollowing);
+        })
+        .catch((error) => {
+          console.error('Error fetching total following:', error);
+        });
+    }
+  }, [id, userData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -78,27 +70,46 @@ export default function Profiles() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!userData.accessToken) {
+      console.error('No access token available');
+      return;
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-access-token': userData.accessToken,
+    };
+
+    const userUpdateData = {
+      name: user.data.name,
+      email: user.data.email,
+      phoneNumber: user.data.phoneNumber,
+      address: user.data.address,
+    };
 
     try {
-      const response = await axios.put(
-        "https://api.realworld.io/api/user",
-        { user: userData },
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}users/edit`,
         {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("userToken")}`,
-          },
+          method: 'PUT',
+          headers,
+          body: JSON.stringify(userUpdateData),
         }
       );
-      const newToken = response.data.user.token;
-      updateUser({ ...userData, token: newToken });
-      localStorage.setItem("userToken", newToken);
-      alert("Settings updated successfully!");
-      nav(`/profiles/${userData.username}`);
+
+      if (response.ok) {
+        console.log('User data updated successfully');
+        // You can add code here to handle a successful update
+      } else {
+        console.error('Failed to update user data');
+        // You can add code here to handle a failed update
+      }
     } catch (error) {
-      console.error("Error updating settings:", error);
-      alert("Failed to update settings. Please try again later.");
+      console.error('An error occurred while updating user data', error);
+      // You can add code here to handle errors
     }
   };
 
@@ -159,32 +170,13 @@ export default function Profiles() {
                       Follow
                     </a>
                     <Link
-                      href={`/message/${user?.email}`}
+                      href={`/message/${user?.id}`}
                       className="btn btn-primary mb-1">
                       Message
                     </Link>
+                  </div>
+                </div>
 
-                  </div>
-                </div>
-                <div className="modal fade" id="sendMessageModal">
-                  <div
-                    className="modal-dialog modal-dialog-centered"
-                    role="document"
-                  >
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Send Message</h5>
-                        <button
-                          type="button"
-                          className="close"
-                          data-dismiss="modal"
-                        >
-                          <span>×</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -229,11 +221,12 @@ export default function Profiles() {
                     </label>
                     <input
                       type="email"
-                      className="form-control"
+                      className="form-control cursor-not-allowed"
                       id="email"
-                      name="fptemail"
+                      name="email"
                       value={user?.data?.email}
                       onChange={handleChange}
+                      disabled
                     />
                   </div>
                   <div className="mb-3 px-2 pt-2">
@@ -253,8 +246,13 @@ export default function Profiles() {
               </div>
             </form>
             <div className="mt-4">
-              <button type="submit" className="btn btn-success mb-1">Update</button>
+              {user?.data?.id === loggedInUserId && (
+                <button type="submit" className="btn btn-success mb-1">
+                  Update
+                </button>
+              )}
             </div>
+
           </div>
         </div>
       </div>

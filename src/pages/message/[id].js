@@ -75,7 +75,7 @@ export default function Message() {
 		} else {
 			console.error("No token in local storage");
 		}
-	}, [userData, receiver]);
+	}, [userData]);
 
 	const sendMessage = () => {
 		if (userData?.accessToken) {
