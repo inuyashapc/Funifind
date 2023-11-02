@@ -63,7 +63,6 @@ export default function PostListAccepted({
         userId,
       })
       .then((response) => {
-        console.log("🚀 ========= response:", response);
         setTotalPost(response?.data?.totalPost);
         setPostPagination(response?.data?.data);
       })
@@ -80,7 +79,6 @@ export default function PostListAccepted({
     postService
       .banPost(postID)
       .then((response) => {
-        console.log("🚀 ========= response:", response);
         toast.success("Ban successfully", {
           position: "top-right",
           autoClose: 3000,

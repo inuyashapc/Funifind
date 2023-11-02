@@ -9,7 +9,6 @@ import { Dialog, Transition } from "@headlessui/react";
 export default function LocationList() {
   const [listLocation, setListLocation] = useState();
   const [id, setId] = useState();
-  console.log("🚀 ========= listLocation:", listLocation);
   const getAllLocation = async () => {
     const result = await locationService.getAllLocation();
     setListLocation(result?.data);

@@ -9,7 +9,6 @@ import img5 from "../../../../public/images/menus/5.png";
 import img34 from "../../../../public/images/avatar/34.png";
 
 export default function CommentReportList({ searchString }) {
-  console.log("🚀 ========= searchString:", searchString);
   const [reportComment, setReportComment] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalReportComment, setTotalReportComment] = useState();
