@@ -33772,7 +33772,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   width: 100%;
 }
 .hover-decoration:hover {
- 
+ cursor: pointer;
   text-decoration: underline;
 }
 .profile .profile-photo {
@@ -40055,6 +40055,74 @@ code {
   -ms-transition: all 0.5s;
   transition: all 0.5s;
 }
+/* CSS button add */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600&display=swap');
+.heart-btn{
+  position: relative;
+  margin: 5px;
+  
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%); */
+}
+.btnlike-content{
+  padding: 13px 16px;
+  display: flex;
+  border: 2px solid #eae2e1;
+  border-radius: 5px;
+  width:100px;
+  height:30px;
+  cursor: pointer;
+}
+.btnlike-content.heart-active{
+  border-color: #f9b9c4 !important; 
+  background: #fbd0d8 !important;
+}
+.btnlike-heart{
+  position: absolute;
+  background: url("../../public/images/likeimg.png") no-repeat;
+  background-position: left;
+  background-size: 2900%;
+  height: 60px;
+  width: 60px;
+  top: 50%;
+  
+  transform: translate(-50%,-50%);
+}
+.btnlike-text{
+  font-size: 16px;
+  margin-left: 20px;
+  color: grey;
+  font-family: 'Montserrat',sans-serif;
+ 
+}
+.btnlike-numb{
+  font-size: 16px;
+  margin-left: 5px;
+  font-weight: 30px;
+  color: #9C9496;
+  font-family: sans-serif;
+}
+.btnlike-numb.heart-active{
+  font-size: 16px;
+  color: #000 !important;
+}
+.btnlike-text.heart-active{
+  color: #000 !important;
+}
+.btnlike-heart.heart-active{
+  animation: animate .8s steps(28) 1;
+  background-position: right;
+}
+@keyframes animate {
+  0%{
+    background-position: left;
+  }
+  100%{
+    background-position: right;
+  }
+}
+/* End */
 
 .pagination .page-item:last-child .page-link {
   margin-right: 0;

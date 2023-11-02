@@ -1,3 +1,41 @@
+import { HomeIcon, DocumentTextIcon } from "@heroicons/react/20/solid";
+
+export const sidebarUserList = [
+  {
+    id: 1,
+    title: "Home",
+    icon: <HomeIcon />,
+    detail: [
+      {
+        id: 1,
+        title: "Home",
+        url: "/",
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Post",
+    icon: <DocumentTextIcon />,
+    detail: [
+      {
+        id: 1,
+        title: "Post list Request",
+        url: "/listPostRequest",
+      },
+      {
+        id: 2,
+        title: "Post list Reject",
+        url: "/listPostReject",
+      },
+      {
+        id: 3,
+        title: "Post list Accepted",
+        url: "/listPostAccepted",
+      },
+    ],
+  },
+];
 export const sidebarList = [
   {
     id: 1,

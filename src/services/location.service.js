@@ -8,7 +8,9 @@ class LocationService {
   getAllLocation() {
     return axios.get(API_URL + "all", { headers: authHeader() });
   }
-
+  getAllLocationGuess() {
+    return axios.get(API_URL + "all");
+  }
   updateLocation(id, name) {
     return axios.put(
       API_URL + `edit`,
