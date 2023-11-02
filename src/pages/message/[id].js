@@ -14,22 +14,20 @@ export default function Message() {
 	const [receiver, setReceiver] = useState(id);
 	/** Bắt đầu phần Trung sửa kết nối socket và nhắn tin */
 	const [socket, setSocket] = useState(null);
-	console.log(receiver);
 	// Kết nối tới sever socket
 	useEffect(() => {
 		const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
 		setSocket(newSocket);
-		if (userData) {
+		if (userData && userData.email != null) {
 			newSocket.emit('storeUserId', userData.email);
 		}
-	}, []);
+	}, [userData]);
 
 	// Chạy khi socket change ( có dữ liệu chuyển từ server xuống );
 	useEffect(() => {
 		if (socket) {
 			// Khi nào có người nhắn tin thì sẽ nhận dữ liệu ở đây
 			socket.on('privateMessage', (data) => {
-				console.log(data, "123");
 				setMessages(messages => [...messages, data])
 			})
 		}
