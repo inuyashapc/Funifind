@@ -23,7 +23,6 @@ export default function PostList() {
     const userData = JSON.parse(localStorage.getItem("user"));
     const id = userData ? userData.id : null;
     setUserId(id);
-    console.log("🚀 ========= id:", id);
     return id;
   };
   const tabList = [

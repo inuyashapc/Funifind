@@ -16,12 +16,10 @@ export default function PostDetail() {
   const router = useRouter();
 
   const { id } = router.query;
-  console.log("🚀 ========= id:", id);
 
   const [postDetail, setPostDetail] = useState();
 
   const [userData, setUserData] = useState({});
-  console.log("🚀 ========= userData:", userData);
 
   useEffect(() => {
     setUserData(JSON.parse(localStorage.getItem("user")));
@@ -30,7 +28,6 @@ export default function PostDetail() {
   const handleDeleteComment = async (commentID) => {
     try {
       const result = await commentService.deleteComment(commentID);
-      console.log("🚀 ========= result1234:", postDetail);
 
       toast.success("Delete successfully", {
         position: "top-right",
@@ -70,7 +67,6 @@ export default function PostDetail() {
     id &&
       PostService.getPostDetails({ postId: id, userId: userData.id })
         .then((res) => {
-          console.log("🚀 ========= res1234:", res?.data?.data.read);
           if (!res?.data?.data?.read) {
             readService
               .read(id)

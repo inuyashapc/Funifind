@@ -122,7 +122,6 @@ class PostService {
   }
 
   banPost(postId) {
-    console.log("🚀 ========= postId:", postId);
     return axios.put(
       API_URL + `ban`,
       {
@@ -134,7 +133,6 @@ class PostService {
     );
   }
   unBanPost(postId) {
-    console.log("🚀 ======= postId:", postId);
     return axios.put(
       API_URL + `unban`,
       {

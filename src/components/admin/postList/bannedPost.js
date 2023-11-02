@@ -31,7 +31,6 @@ export default function BannedPost({ searchString, location }) {
         location,
       })
       .then((response) => {
-        console.log("🚀 ========= response:", response);
         setTotalPost(response?.data?.totalPost);
         setPostPagination(response?.data?.data);
       })
@@ -48,7 +47,6 @@ export default function BannedPost({ searchString, location }) {
     postService
       .unBanPost(postID)
       .then((response) => {
-        console.log("🚀 ========= response:", response);
         toast.success("Post active successfully", {
           position: "top-right",
           autoClose: 3000,

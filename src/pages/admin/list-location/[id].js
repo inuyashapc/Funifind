@@ -9,7 +9,6 @@ import { Dialog, Transition } from "@headlessui/react";
 export default function LocationDetail() {
   const router = useRouter();
   const { id } = router.query;
-  console.log("🚀 ========= id:", id);
   const [detail, setDetail] = useState();
   const updateLocation = async (name) => {
     try {
@@ -26,7 +25,6 @@ export default function LocationDetail() {
           theme: "colored",
         });
       }
-      console.log("🚀 ========= result:", result);
     } catch (error) {
       console.log("🚀 ========= error:", error);
     }
@@ -34,7 +32,6 @@ export default function LocationDetail() {
   const getDetailLocation = async () => {
     try {
       const result = await locationService.getDetailLocation(id);
-      console.log("🚀 ========= result:", result.data);
       setDetail(result?.data);
     } catch (error) {
       console.log("🚀 ========= error:", error);

@@ -23,7 +23,6 @@ class ReportService {
     );
   }
   async getReportPost({ currentPage, pageSize, searchString }) {
-    console.log("🚀 ========= searchString:", searchString);
     return await axios.get(
       API_URL +
         "reportPost" +

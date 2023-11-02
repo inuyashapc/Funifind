@@ -116,7 +116,6 @@ export default function Home() {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      console.log("🚀 ========= user:", storedUser);
     }
   }, []);
   const getAllLocation = () => {
@@ -132,7 +131,6 @@ export default function Home() {
         });
 
         setLocationList([...locationList, ...uniqueNewLocations]);
-        console.log("🚀 ========= response1234:", response?.data);
       })
       .catch((error) => {
         console.log(error?.response?.data?.message);

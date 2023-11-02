@@ -19,7 +19,6 @@ export default function PostListNeedAccept({ searchString }) {
     postService
       .getListPostPending({ currentPage, pageSize, searchString })
       .then((res) => {
-        console.log("🚀 ========= res:", res);
         setPostPending(res.data.listPostPending);
         setTotalPost(res.data.totalPost);
       })
@@ -95,7 +94,6 @@ export default function PostListNeedAccept({ searchString }) {
     e.preventDefault();
     rejectPost(idPost, e.target.banPost.value);
     setIsOpen(false);
-    console.log("🚀 ========= e:", e.target.banPost.value);
   };
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
