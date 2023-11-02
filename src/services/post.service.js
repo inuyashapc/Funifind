@@ -111,10 +111,14 @@ class PostService {
     );
   }
 
-  getPostDetails({ postId }) {
-    return axios.get(API_URL + postId, {
-      headers: authHeader(),
-    });
+  getPostDetails({ postId, userId }) {
+    return axios.get(
+      API_URL + postId,
+      { userId },
+      {
+        headers: authHeader(),
+      }
+    );
   }
 
   banPost(postId) {

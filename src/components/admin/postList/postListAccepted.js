@@ -4,13 +4,8 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
-import io from "socket.io-client";
 import img34 from "../../../../public/images/avatar/34.png";
-/** Bắt đầu phần TrungNQ thêm mới thư viện phần comment với socketIO */
-import commentService from "@/services/comment.service";
 import postService from "@/services/post.service";
-import ReportModal from "./reportModal";
-/** Kết thúc phần TrungNQ thêm mới thư viện phần comment */
 
 export default function PostListAccepted({
   posts,
@@ -24,65 +19,7 @@ export default function PostListAccepted({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState(1);
   const [postPagination, setPostPagination] = useState();
-  const [locationList, setLocationList] = useState();
-  // console.log("🚀 ========= totalPost:", totalPost);
-  //----------------------------------------------------------
-  /** Bắt đầu phần Trung sửa kết nối socket và tạo comment */
-  const [socket, setSocket] = useState(null);
-  // Kết nối tới sever socket
-  useEffect(() => {
-    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
-    setSocket(newSocket);
-  }, []);
 
-  // Chạy khi socket change ( có dữ liệu chuyển từ server xuống );
-  useEffect(() => {
-    if (socket) {
-      // Khi có một người comment, những người khác sẽ nhận được data của comment thông qua đây
-      socket.on("getComment", (response) => {
-        console.log(response.data);
-        // Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
-        if (response.data) {
-          setPostPagination((listPost) =>
-            listPost?.map((post) => {
-              if (post._id === response.data.post) {
-                // Check xem comment đã được thêm chưa, tránh duplicate
-                const isExisted = post.comments.find(
-                  (comment) => comment._id === response.data._id
-                );
-                if (!isExisted) post.comments.push(response.data);
-              }
-              return post;
-            })
-          );
-        }
-      });
-    }
-  }, [socket]);
-
-  // Comment ở một post
-  const handleComment = async (e, postID) => {
-    e.preventDefault();
-    // Dữ liệu cần để tạo ra 1 comment.
-    const params = {
-      content: e.target.content.value,
-      postID,
-    };
-    // call API để lưu comment;
-    commentService
-      .createComment(params)
-      .then((response) => {
-        if (response) {
-          // Truyền dữ liệu lên socket để server biết có comment mới
-          socket.emit("sendComment", response.data);
-          loadDataPost();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  /** Kết thúc phần Trung sửa kết nối socket và tạo comment */
   //----------------------------------------------------------
   //Xóa post
   // const deletePost = (postID) => {
@@ -111,6 +48,7 @@ export default function PostListAccepted({
   //       });
   //   }
   // };
+
   const handlePageClick = (event) => {
     setCurrentPage(event.selected + 1);
   };
@@ -182,19 +120,6 @@ export default function PostListAccepted({
                 className="w-[120px] h-[135px] mr-4"
                 alt="logo"
               />
-              {/* <Image
-              className="rounded mr-3 mb-md-0 mb-3"
-              src={img5}
-              width={120}
-              alt=""
-            /> */}
-              {/* <Image
-              className="rounded mr-3 mb-md-0 mb-3"
-              src={post?.images.length != 0 ? post?.images[0]?.url : img5}
-              width={120}
-              height={120}
-              alt=""
-            /> */}
             </Link>
             <div className="media-body col-lg-8 pl-0">
               <h6 className="fs-16 font-w600">
@@ -244,21 +169,6 @@ export default function PostListAccepted({
                   </li>
                 </ul>
               </div>
-              {/* Hiển thị danh sách comment */}
-              {post.comments.map((comment) => (
-                <div key={comment?._id}>{comment.content}</div>
-              ))}
-              {/* Tạo comment */}
-              <form className="" onSubmit={(e) => handleComment(e, post._id)}>
-                <input
-                  className="border border-black rounded-md p-2 me-2"
-                  type="text"
-                  name="content"
-                />
-                <button className="border bg-blue-500 rounded-md p-2 text-white">
-                  Comment
-                </button>
-              </form>
             </div>
             <button
               className="btn btn-primary light btn-md ml-auto"
