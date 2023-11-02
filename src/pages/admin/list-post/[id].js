@@ -1,44 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-
-import LayoutAdmin from "@/layouts/layoutAdmin";
-import PostService from "../../../services/post.service";
-import img1 from "../../../../public/images/product/1.jpg";
-import img2 from "../../../../public/images/product/2.jpg";
-import img3 from "../../../../public/images/product/3.jpg";
-import img4 from "../../../../public/images/product/4.jpg";
 import dayjs from "dayjs";
-import commentService from "@/services/comment.service";
 import { toast } from "react-toastify";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+
+import LayoutAdmin from "@/layouts/layoutAdmin";
+import PostService from "../../../services/post.service";
+import img2 from "../../../../public/images/product/2.jpg";
+import commentService from "@/services/comment.service";
 import readService from "@/services/read.service";
+
 export default function PostDetail() {
   const router = useRouter();
+
   const { id } = router.query;
+  console.log("🚀 ========= id:", id);
+
   const [postDetail, setPostDetail] = useState();
-  const [comment, setComment] = useState();
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  console.log("🚀 ========= postDetail:", postDetail);
-  // const getPostDetails = async () => {
-  //   try {
-  //     const detail = await PostService.getPostDetails({ postId: id });
-  //     console.log("🚀 ========= detail:", detail);
-  //     return detail;
-  //   } catch (error) {
-  //     console.log("🚀 ========= error:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   const result = getPostDetails();
-  //   console.log("🚀 ========= result:", result);
-  //   setDetail(result);
-  // }, []);
-  console.log(
-    "🚀 ========= result1234:",
-    postDetail && postDetail[0]?.comments
-  );
+
+  const [userData, setUserData] = useState({});
+  console.log("🚀 ========= userData:", userData);
+
+  useEffect(() => {
+    setUserData(JSON.parse(localStorage.getItem("user")));
+  }, []);
+
   const handleDeleteComment = async (commentID) => {
     try {
       const result = await commentService.deleteComment(commentID);
@@ -77,12 +65,13 @@ export default function PostDetail() {
       console.log("🚀 ========= error:", error);
     }
   };
+
   const DataDetailPost = () => {
     id &&
-      PostService.getPostDetails({ postId: id })
+      PostService.getPostDetails({ postId: id, userId: userData.id })
         .then((res) => {
-          console.log("🚀 ========= res1234:", res);
-          if (res?.data?.data[0].read) {
+          console.log("🚀 ========= res1234:", res?.data?.data.read);
+          if (!res?.data?.data?.read) {
             readService
               .read(id)
               .then((res) => console.log("check", res))
@@ -94,12 +83,11 @@ export default function PostDetail() {
           console.log(err);
         });
   };
+
   useEffect(() => {
     DataDetailPost();
   }, [id]);
-  const handleChange = (e) => {
-    console.log("data", e);
-  };
+
   return !postDetail ? (
     <LayoutAdmin>
       <h4 className="text-center">Loading</h4>
@@ -131,8 +119,8 @@ export default function PostDetail() {
                         id="first"
                       >
                         {postDetail &&
-                        postDetail[0]?.images &&
-                        postDetail[0]?.images[0]?.url ? (
+                        postDetail?.images &&
+                        postDetail?.images[0]?.url ? (
                           <div>
                             <Swiper
                               rewind={true}
@@ -149,7 +137,7 @@ export default function PostDetail() {
                               modules={[Autoplay, Pagination, Navigation]}
                               className="mySwiper"
                             >
-                              {postDetail[0]?.images?.map((item, index) => (
+                              {postDetail?.images?.map((item, index) => (
                                 <SwiperSlide key={index}>
                                   <img src={item?.url} alt="img1" />
                                 </SwiperSlide>
@@ -169,17 +157,17 @@ export default function PostDetail() {
                     <div className="product-detail-content">
                       {/*Product details*/}
                       <div className="new-arrival-content pr">
-                        <h4>{postDetail[0]?.content}</h4>
+                        <h4>{postDetail?.content}</h4>
                         <div className="review-text">
-                          ({postDetail[0]?.comments?.length} comments)
+                          ({postDetail?.comments?.length} comments)
                         </div>
                         <p>
-                          Author: <span>{postDetail[0]?.user?.name}</span>
+                          Author: <span>{postDetail?.user?.name}</span>
                         </p>
                         <p>
                           Create At:{" "}
                           <span>
-                            {dayjs(postDetail[0]?.createdAt).format(
+                            {dayjs(postDetail?.createdAt).format(
                               "DD-MM-YYYY HH:mm:ss"
                             )}
                           </span>{" "}
@@ -228,7 +216,7 @@ export default function PostDetail() {
                 </tr>
               </thead>
               <tbody>
-                {postDetail[0]?.comments?.map((post, index) => (
+                {postDetail?.comments?.map((post, index) => (
                   <tr key={post?._id}>
                     <td scope="row">{index + 1}</td>
                     <td>{post?.content}</td>
