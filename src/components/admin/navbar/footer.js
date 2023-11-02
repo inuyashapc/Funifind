@@ -7,7 +7,7 @@ export default function Footer() {
         <p>
           Copyright © Designed &amp; Developed by{" "}
           <a href="/" target="_blank">
-            Group 3
+            Group 6
           </a>{" "}
           2023
         </p>

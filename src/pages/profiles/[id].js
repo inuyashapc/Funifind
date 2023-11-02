@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import LayoutAdmin from "@/layouts/layoutAdmin";
+import LayoutUser from "@/layouts/layoutUser";
 import img1 from "../../../public/images/profile/profile.png";
 import Link from "next/link";
 
@@ -27,29 +27,41 @@ export default function Profiles({ loggedInUserId }) {
     } else {
       console.error('No user data in local storage');
     }
-
+  
     // Fetch user data and totalFollowing
     if (id && userData.accessToken) {
       const headers = {
         'x-access-token': userData.accessToken,
       };
-
+  
       // Fetch user data
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`)
-        .then((response) => response.json())
+      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`, {
+        headers: headers, // Define headers here
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          return response.json();
+        })
         .then((userData) => {
           setUser(userData);
         })
         .catch((error) => {
           console.error('Error fetching user data:', error);
         });
-
+  
       // Fetch totalFollowing
       fetch(`${process.env.NEXT_PUBLIC_BASE_URL}follows/${id}`, {
         method: 'GET',
-        headers: headers,
+        headers: headers, // Define headers here
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch total following data');
+          }
+          return response.json();
+        })
         .then((totalFollowingData) => {
           setTotalFollowing(totalFollowingData.totalFollowing);
         })
@@ -57,7 +69,9 @@ export default function Profiles({ loggedInUserId }) {
           console.error('Error fetching total following:', error);
         });
     }
-  }, [id, userData]);
+  }, [id, userData.accessToken]);
+  
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -117,8 +131,11 @@ export default function Profiles({ loggedInUserId }) {
     return <div>Loading...</div>;
   }
 
+
   return (
-    <LayoutAdmin>
+    <LayoutUser>
+
+    {/* <> */}
       <div className="row">
         <div className="col-lg-12">
           <div className="profile card card-body px-3 pt-3 pb-0">
@@ -155,7 +172,7 @@ export default function Profiles({ loggedInUserId }) {
                   <div className="row">
                     <div className="col">
                       {totalFollowing !== null ? (
-                        <p>Total Following: {totalFollowing}</p>
+                        <h2>{totalFollowing}</h2>
                       ) : (
                         <p>Loading Total Following...</p>
                       )}
@@ -170,7 +187,7 @@ export default function Profiles({ loggedInUserId }) {
                       Follow
                     </a>
                     <Link
-                      href={`../message/${id}`}
+                      href={`/message/${user?.data?.email}`}
                       className="btn btn-primary mb-1">
                       Message
                     </Link>
@@ -256,6 +273,7 @@ export default function Profiles({ loggedInUserId }) {
           </div>
         </div>
       </div>
-    </LayoutAdmin>
+    {/* </> */}
+    </LayoutUser>
   );
 }
