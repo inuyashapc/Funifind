@@ -9,6 +9,9 @@ export default function Profiles({ loggedInUserId }) {
   const router = useRouter();
   const { id } = router.query;
   const [userData, setUserData] = useState({});
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const [user, setUser] = useState({
     data: {
       name: '',
@@ -27,13 +30,13 @@ export default function Profiles({ loggedInUserId }) {
     } else {
       console.error('No user data in local storage');
     }
-  
+
     // Fetch user data and totalFollowing
     if (id && userData.accessToken) {
       const headers = {
         'x-access-token': userData.accessToken,
       };
-  
+
       // Fetch user data
       fetch(`${process.env.NEXT_PUBLIC_BASE_URL}users/${id}`, {
         headers: headers, // Define headers here
@@ -50,7 +53,7 @@ export default function Profiles({ loggedInUserId }) {
         .catch((error) => {
           console.error('Error fetching user data:', error);
         });
-  
+
       // Fetch totalFollowing
       fetch(`${process.env.NEXT_PUBLIC_BASE_URL}follows/${id}`, {
         method: 'GET',
@@ -70,7 +73,7 @@ export default function Profiles({ loggedInUserId }) {
         });
     }
   }, [id, userData.accessToken]);
-  
+
 
 
   const handleChange = (event) => {
@@ -102,7 +105,10 @@ export default function Profiles({ loggedInUserId }) {
       email: user.data.email,
       phoneNumber: user.data.phoneNumber,
       address: user.data.address,
+      password: user.data.password,
     };
+
+    console.log(userUpdateData)
 
     try {
       const response = await fetch(
@@ -116,15 +122,19 @@ export default function Profiles({ loggedInUserId }) {
 
       if (response.ok) {
         console.log('User data updated successfully');
+        setSuccessMessage('User data updated successfully');
         // You can add code here to handle a successful update
       } else {
         console.error('Failed to update user data');
+        setErrorMessage('Failed to update user data');
         // You can add code here to handle a failed update
       }
     } catch (error) {
       console.error('An error occurred while updating user data', error);
+      setErrorMessage('An error occurred while updating user data');
       // You can add code here to handle errors
     }
+
   };
 
   if (!user) {
@@ -134,8 +144,6 @@ export default function Profiles({ loggedInUserId }) {
 
   return (
     <LayoutUser>
-
-    {/* <> */}
       <div className="row">
         <div className="col-lg-12">
           <div className="profile card card-body px-3 pt-3 pb-0">
@@ -229,6 +237,19 @@ export default function Profiles({ loggedInUserId }) {
                       onChange={handleChange}
                     />
                   </div>
+                  <div className="mb-3 px-2 pt-2">
+                    <label htmlFor="password" className="form-label">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      name="password"
+                      placeholder="enter your password to update your profile"
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
                 <div className="about-me-right">
@@ -255,25 +276,25 @@ export default function Profiles({ loggedInUserId }) {
                       className="form-control"
                       id="address"
                       name="address"
-                      value={user?.data?.address ?? ""}
+                      value={user?.data?.address}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
               </div>
+              {successMessage && <p className="text-success">{successMessage}</p>}
+              {errorMessage && <p className="text-danger">{errorMessage}</p>}
+              <div className="mt-4">
+                {user?.data?._id !== loggedInUserId && (
+                  <button type="submit" className="btn btn-success mb-1">
+                    Update
+                  </button>
+                )}
+              </div>
             </form>
-            <div className="mt-4">
-              {user?.data?.id === loggedInUserId && (
-                <button type="submit" className="btn btn-success mb-1">
-                  Update
-                </button>
-              )}
-            </div>
-
           </div>
         </div>
       </div>
-    {/* </> */}
     </LayoutUser>
   );
 }
