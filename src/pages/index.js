@@ -85,7 +85,6 @@ export default function Home() {
 
 	  // Khi có một thông báo mới tới user, sẽ nhận được thông tin message ở đây
 	  socket.on("notification", (response) => {
-		console.log(response);
 		toast.warn(response.message, {
 			position: "bottom-right",
 			autoClose: 3000,

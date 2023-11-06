@@ -8,6 +8,7 @@ import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
 import { Dialog, Transition, Fragment } from "@headlessui/react";
 import notificationService from "@/services/notification.service";
+import io from "socket.io-client";
 
 export default function PostListAccepted({
   posts,
@@ -23,6 +24,9 @@ export default function PostListAccepted({
   const [postPagination, setPostPagination] = useState();
   const [banPostId, setBanPostId] = useState();
   const [userIdNeedToBan, setUserIdNeedToBan] = useState();
+  // Thêm socket
+  const [socket, setSocket] = useState(null);
+
   let [isOpen, setIsOpen] = useState(false);
 
   //----------------------------------------------------------
@@ -53,6 +57,12 @@ export default function PostListAccepted({
   //       });
   //   }
   // };
+
+  // Kết nối socket
+  useEffect(() => {
+    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
+    setSocket(newSocket);
+  }, []);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected + 1);
@@ -122,6 +132,8 @@ export default function PostListAccepted({
         userId: userIdNeedToBan,
       });
       console.log("🚀 ========= result1111:", result);
+		// Gửi thông báo tới user bị ban bài
+	  socket.emit("notification", {message: `Your post is banned because ${content}`, userId: result.user });
     } catch (error) {
       console.log("🚀 ========= error:", error);
     }
