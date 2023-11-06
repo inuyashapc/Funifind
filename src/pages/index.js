@@ -27,10 +27,16 @@ import {
   Cog8ToothIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
+import UpdatePost from "./admin/list-post/update";
+import reportService from "@/services/report.service";
 
 export default function Home() {
   const [user, setUser] = useState();
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [deleteP, setDeleteP] = useState(false);
+  const [reportPost, setReportPost] = useState(false);
+  const [selectPost, setSelectPost] = useState();
   const [refresh, setRefresh] = useState(false);
   const [search, setSearch] = useState();
   const pageSize = 5;
@@ -136,6 +142,74 @@ export default function Home() {
         console.log(error?.response?.data?.message);
       });
   };
+  const handleDelete = () => {
+    postService
+      .deletePost(selectPost?._id)
+      .then((response) => {
+        console.log(response);
+        toast.success(response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setDeleteP(false);
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        console.log();
+      });
+  };
+  const handleReport = async (e) => {
+    e.preventDefault();
+    const nguyennhan = e.target.post.value;
+    console.log(nguyennhan);
+    if (nguyennhan) {
+      reportService
+        .createReportPost(selectPost?._id, nguyennhan)
+        .then((response) => {
+          console.log(response);
+          toast.success(response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setReportPost(false);
+          e.target.reset();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        });
+    }
+  };
   const loadDataPost = () => {
     postService
       .getAllPostUserWithPagination({
@@ -161,35 +235,45 @@ export default function Home() {
   useEffect(() => {
     loadDataPost();
   }, [currentPage, search, selected?._id, user, refresh]);
-  console.log(postPagination);
   function toggleClass(element, className) {
     if (!element.classList.contains(className)) {
       element.classList.add(className);
     } else element.classList.remove(className);
   }
   const handleOnclickBtnLike = async (postID, typeInteract, index) => {
-    toggleClass(
-      document.querySelectorAll(".btnlike-heart")[index],
-      "heart-active"
-    );
-    toggleClass(
-      document.querySelectorAll(".btnlike-text")[index],
-      "heart-active"
-    );
+    if (user) {
+      toggleClass(
+        document.querySelectorAll(".btnlike-heart")[index],
+        "heart-active"
+      );
+      toggleClass(
+        document.querySelectorAll(".btnlike-text")[index],
+        "heart-active"
+      );
 
-    interactionService
-      .interactWithPost({ postID, typeInteract })
-      .then((response) => {
-        setRefresh(!refresh);
-        console.log("🚀 ========= response:", response);
-        console.log("🚀 ========= post:", postID);
-      })
-      .catch((error) => {
-        console.log(error?.response?.data?.message);
-      });
+      interactionService
+        .interactWithPost({ postID, typeInteract })
+        .then((response) => {
+          setRefresh(!refresh);
+          console.log("🚀 ========= response:", response);
+          console.log("🚀 ========= post:", postID);
+        })
+        .catch((error) => {
+          console.log(error?.response?.data?.message);
+        });
+    } else handleShowToast("Login before like");
   };
   function closeModal() {
     setOpen(false);
+  }
+  function closeModalEdit() {
+    setEdit(false);
+  }
+  function closeModaldelete() {
+    setDeleteP(false);
+  }
+  function closeModalReport() {
+    setReportPost(false);
   }
   const handleShowToast = (message) => {
     toast.error(message, {
@@ -207,7 +291,18 @@ export default function Home() {
     if (user != undefined) setOpen(true);
     else handleShowToast("Login before create new post");
   }
-
+  const handlePreEdit = (post) => {
+    setSelectPost(post);
+    setEdit(true);
+  };
+  const handlePreDelete = (post) => {
+    setSelectPost(post);
+    setDeleteP(true);
+  };
+  const handlePreReport = (post) => {
+    setSelectPost(post);
+    setReportPost(true);
+  };
   return (
     <>
       <Navbar user={user} setUser={setUser} />
@@ -249,6 +344,161 @@ export default function Home() {
                     </Dialog.Title>
                     <div className="mt-2">
                       <CreatePost locationList={locationList} />
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={edit} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModalEdit}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "200%", minHeight: "400px" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Chỉnh sửa bài viết
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <UpdatePost
+                        locationList={locationList}
+                        data={selectPost}
+                        setEdit={setEdit}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
+                      />
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={deleteP} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModaldelete}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "100%", minHeight: "100px" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 "
+                    >
+                      {"Are you sure delete this post ?"}
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red px-4 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={handleDelete}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={reportPost} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModalReport}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "200%" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Report Post
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <form onSubmit={handleReport}>
+                        <textarea
+                          name="post"
+                          className="form-control mb-2"
+                          placeholder="Why?"
+                          rows="3"
+                          required
+                        ></textarea>
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Report
+                        </button>
+                      </form>
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -413,6 +663,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreEdit(post)}
                                     >
                                       Edit
                                     </button>
@@ -426,6 +677,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreDelete(post)}
                                     >
                                       Delete
                                     </button>
@@ -442,6 +694,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreReport(post)}
                                     >
                                       Report
                                     </button>
@@ -474,11 +727,7 @@ export default function Home() {
                       overflowWrap: "break-word",
                     }}
                   >
-                    <a
-                      href="#"
-                      className="card-title my-2 hover-decoration "
-                      title={post.title}
-                    >
+                    <a className="card-title my-2" title={post.title}>
                       {post?.content}
                     </a>
                   </div>
@@ -494,11 +743,13 @@ export default function Home() {
                     </a>
                   </div>
 
-                  <img
-                    src={post?.images[0]?.url}
-                    class="card-img-top"
-                    alt="f"
-                  />
+                  {post?.images[0]?.url && (
+                    <img
+                      src={post?.images[0]?.url}
+                      class="card-img-top"
+                      alt="f"
+                    />
+                  )}
 
                   <ul className="d-flex flex-wrap mb-sm-0 mb-2 justify-start mt-3">
                     <li className="text-nowrap mb-2 relative mr-3">
@@ -698,32 +949,34 @@ export default function Home() {
                 </div>
               </div>
             ))}
-            <div className="col-9">
-              <ReactPaginate
-                nextLabel="next >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={pageSize}
-                marginPagesDisplayed={2}
-                pageCount={
-                  totalPost % pageSize === 0
-                    ? totalPost / pageSize
-                    : Math.floor(totalPost / pageSize) + 1
-                }
-                previousLabel="< previous"
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                breakLabel="..."
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                containerClassName="pagination"
-                activeClassName="active"
-                renderOnZeroPageCount={null}
-              />
-            </div>
+            {postPagination && (
+              <div className="col-9">
+                <ReactPaginate
+                  nextLabel="next >"
+                  onPageChange={handlePageClick}
+                  pageRangeDisplayed={pageSize}
+                  marginPagesDisplayed={2}
+                  pageCount={
+                    totalPost % pageSize === 0
+                      ? totalPost / pageSize
+                      : Math.floor(totalPost / pageSize) + 1
+                  }
+                  previousLabel="< previous"
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousClassName="page-item"
+                  previousLinkClassName="page-link"
+                  nextClassName="page-item"
+                  nextLinkClassName="page-link"
+                  breakLabel="..."
+                  breakClassName="page-item"
+                  breakLinkClassName="page-link"
+                  containerClassName="pagination"
+                  activeClassName="active"
+                  renderOnZeroPageCount={null}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

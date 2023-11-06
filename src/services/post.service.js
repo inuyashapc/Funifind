@@ -78,7 +78,27 @@ class PostService {
       return erorr;
     }
   }
-
+  async editPost(content, location, postID) {
+    try {
+      if (location != 1) {
+        const response = await axios.put(
+          API_URL + "edit",
+          { content, location, postID },
+          { headers: authHeader() }
+        );
+        return response.data;
+      } else {
+        const response = await axios.put(
+          API_URL + "edit",
+          { content, postID },
+          { headers: authHeader() }
+        );
+        return response.data;
+      }
+    } catch (erorr) {
+      return erorr;
+    }
+  }
   deletePost(postID) {
     return axios.delete(API_URL + "delete", {
       headers: authHeader(),
