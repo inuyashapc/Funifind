@@ -506,7 +506,7 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition>
-        <div className="col container-fluid">
+        <div className="col-9 container-fluid">
           <div className=" justify-center">
             <div className="card-header">
               <div className="flex items-center gap-2 justify-start">
@@ -600,7 +600,7 @@ export default function Home() {
 
           <div
             className="row px-2"
-            style={{ maxHeight: "80vh", overflow: "auto" }}
+            style={{ maxHeight: "70vh", overflow: "auto" }}
           >
             {postPagination?.map((post, index) => (
               <div key={post?._id} className="col-9 ">
