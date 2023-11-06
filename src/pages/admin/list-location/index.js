@@ -58,16 +58,16 @@ export default function LocationList() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
+                #
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Location
               </th>
               <th scope="col" className="px-6 py-3">
                 Created At
               </th>
               <th scope="col" className="px-6 py-3">
-                Category
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Price
+                Update At
               </th>
               <th scope="col" className="px-6 py-3">
                 Action
@@ -80,16 +80,18 @@ export default function LocationList() {
                 key={index}
                 className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
               >
+                <td className="px-6 py-4">{index + 1}</td>
                 <th
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {location?.name}
                 </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">$2999</td>
                 <td className="px-6 py-4">
                   {dayjs(location?.createdAt)?.format("DD-MM-YYYY HH:mm:ss")}
+                </td>
+                <td className="px-6 py-4">
+                  {dayjs(location?.updatedAt)?.format("DD-MM-YYYY HH:mm:ss")}
                 </td>
 
                 <td className="py-4 flex justify-around">
@@ -146,8 +148,7 @@ export default function LocationList() {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
+                      Click yes to delete it permanently
                     </p>
                   </div>
 
