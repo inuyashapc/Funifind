@@ -14,6 +14,7 @@ export default function LayoutUser({ children }) {
     }
   }, []);
 
+
   return (
     <div>
       <Navbar user={user} setUser={setUser} />

@@ -62,6 +62,7 @@ export default function BannedPost({ searchString, location }) {
           progress: undefined,
           theme: "colored",
         });
+		console.log(response);
         loadDataPost();
       })
       .catch((error) => {

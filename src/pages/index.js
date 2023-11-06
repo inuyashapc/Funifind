@@ -52,12 +52,14 @@ export default function Home() {
       const decodedToken = jwtDecode(user.accessToken);
       let currentDate = new Date();
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        console.log("as");
         authService.logout();
         setUser(null);
         window.location.reload();
       }
     }
+	if(user && socket){
+		socket.emit("storeUserId", user.id);
+	} 
   }, [user]);
   useEffect(() => {
     if (socket) {
@@ -80,6 +82,20 @@ export default function Home() {
           );
         }
       });
+
+	  // Khi có một thông báo mới tới user, sẽ nhận được thông tin message ở đây
+	  socket.on("notification", (response) => {
+		toast.warn(response.message, {
+			position: "bottom-right",
+			autoClose: 3000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "colored",
+		  });
+	  })
     }
   }, [socket]);
   const handleComment = async (e, postID) => {
