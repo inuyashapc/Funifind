@@ -10,11 +10,12 @@ export default function LocationDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [detail, setDetail] = useState();
+
   const updateLocation = async (name) => {
     try {
       const result = await locationService.updateLocation(id, name);
       if (result) {
-        toast.success("Create successfully", {
+        toast.success("Update successfully", {
           position: "bottom-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -29,6 +30,7 @@ export default function LocationDetail() {
       console.log("🚀 ========= error:", error);
     }
   };
+
   const getDetailLocation = async () => {
     try {
       const result = await locationService.getDetailLocation(id);
@@ -37,13 +39,16 @@ export default function LocationDetail() {
       console.log("🚀 ========= error:", error);
     }
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     updateLocation(e.target.locationName.value);
   };
+
   useEffect(() => {
     getDetailLocation();
   }, []);
+
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit}>
@@ -73,59 +78,8 @@ export default function LocationDetail() {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="last-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Last name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="last-name"
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
               <div className="col-span-full">
-                <label
-                  htmlFor="street-address"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Street address
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-                <button className="btn btn-primary">Save</button>
+                <button className="btn btn-primary">Update</button>
               </div>
             </div>
           </div>
