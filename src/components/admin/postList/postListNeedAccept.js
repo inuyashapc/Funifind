@@ -8,10 +8,12 @@ import postService from "@/services/post.service";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { Dialog, Transition } from "@headlessui/react";
+import io from "socket.io-client";
 export default function PostListNeedAccept({ searchString }) {
   const [postPending, setPostPending] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState();
+  const [socket, setSocket] = useState(null);
   const pageSize = 5;
   let [isOpen, setIsOpen] = useState(false);
   const [idPost, setIdPost] = useState();
@@ -29,6 +31,34 @@ export default function PostListNeedAccept({ searchString }) {
   useEffect(() => {
     loadDataPost();
   }, [currentPage, searchString]);
+
+  useEffect(() => {
+    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
+    setSocket(newSocket);
+  }, []);
+  useEffect(() => {
+    if (socket) {
+      // Khi có một người comment, những người khác sẽ nhận được data của comment thông qua đây
+      socket.on("getComment", (response) => {
+        console.log(response.data);
+        // Thêm comment vừa thêm ngay lập tức tới tất cả user đang xem bài post:
+        if (response.data) {
+          setPostPagination((listPost) =>
+            listPost?.map((post) => {
+              if (post._id === response.data.post) {
+                // Check xem comment đã được thêm chưa, tránh duplicate
+                const isExisted = post.comments.find(
+                  (comment) => comment._id === response.data._id
+                );
+                if (!isExisted) post.comments.push(response.data);
+              }
+              return post;
+            })
+          );
+        }
+      });
+    }
+  }, [socket]);
 
   const approvePost = (postID) => {
     postService
@@ -68,6 +98,7 @@ export default function PostListNeedAccept({ searchString }) {
           progress: undefined,
           theme: "colored",
         });
+		socket.emit("notification", {message: `Your post is rejected because: ${refuseReason}`, userId: res.data.data.user._id})
         setPostPending((listPost) =>
           listPost.filter((post) => post._id !== res.data.data._id)
         );

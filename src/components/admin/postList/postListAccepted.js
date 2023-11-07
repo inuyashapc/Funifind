@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import img34 from "../../../../public/images/avatar/34.png";
 import postService from "@/services/post.service";
+import { Dialog, Transition, Fragment } from "@headlessui/react";
+import notificationService from "@/services/notification.service";
+import io from "socket.io-client";
 
 export default function PostListAccepted({
   posts,
@@ -19,6 +22,12 @@ export default function PostListAccepted({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPost, setTotalPost] = useState(1);
   const [postPagination, setPostPagination] = useState();
+  const [banPostId, setBanPostId] = useState();
+  const [userIdNeedToBan, setUserIdNeedToBan] = useState();
+  // Thêm socket
+  const [socket, setSocket] = useState(null);
+
+  let [isOpen, setIsOpen] = useState(false);
 
   //----------------------------------------------------------
   //Xóa post
@@ -49,6 +58,12 @@ export default function PostListAccepted({
   //   }
   // };
 
+  // Kết nối socket
+  useEffect(() => {
+    const newSocket = io(process.env.NEXT_PUBLIC_BASE_URL);
+    setSocket(newSocket);
+  }, []);
+
   const handlePageClick = (event) => {
     setCurrentPage(event.selected + 1);
   };
@@ -71,9 +86,11 @@ export default function PostListAccepted({
         console.log(error?.response?.data?.message);
       });
   };
+
   useEffect(() => {
     loadDataPost();
   }, [currentPage, searchString, location]);
+
   //ban post
   const banPost = (postID) => {
     postService
@@ -96,6 +113,37 @@ export default function PostListAccepted({
       });
   };
 
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal(id, userId) {
+    console.log("🚀 ========= userId:", userId);
+    setUserIdNeedToBan(userId);
+    setBanPostId(id);
+    setIsOpen(true);
+  }
+
+  const sendNotification = async ({ content, uri }) => {
+    try {
+      const result = await notificationService.createNotifications({
+        content,
+        uri,
+        userId: userIdNeedToBan,
+      });
+      console.log("🚀 ========= result1111:", result);
+		// Gửi thông báo tới user bị ban bài
+	  socket.emit("notification", {message: `Your post is banned because ${content}`, userId: result.user });
+    } catch (error) {
+      console.log("🚀 ========= error:", error);
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendNotification({ content: e.target.banPost.value });
+    banPost(banPostId);
+    setIsOpen(false);
+  };
   return (
     <div className="card-body loadmore-content dz-scroll" id="DietMenusContent">
       {postPagination ? (
@@ -170,7 +218,7 @@ export default function PostListAccepted({
             </div>
             <button
               className="btn btn-primary light btn-md ml-auto"
-              onClick={() => banPost(post?._id)}
+              onClick={() => openModal(post?._id, post?.user?._id)}
             >
               <i className="fa fa-trash scale5 mr-3" />
               Ban post
@@ -180,6 +228,64 @@ export default function PostListAccepted({
       ) : (
         <div>Không có kết quả</div>
       )}
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center bg-blue-200 bg-opacity-80">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-[500px] max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Nội dung của khóa bài viết
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <form onSubmit={handleSubmit}>
+                      <textarea
+                        className="border w-full"
+                        name="banPost"
+                        id="banPost"
+                        placeholder="Nhập nội dung"
+                        required
+                        rows={8}
+                      ></textarea>
+                      <div className="mt-4">
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}
