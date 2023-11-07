@@ -13,28 +13,6 @@ export const sidebarUserList = [
       },
     ],
   },
-  {
-    id: 2,
-    title: "Post",
-    icon: <DocumentTextIcon />,
-    detail: [
-      {
-        id: 1,
-        title: "Post list Request",
-        url: "/listPostRequest",
-      },
-      {
-        id: 2,
-        title: "Post list Reject",
-        url: "/listPostReject",
-      },
-      {
-        id: 3,
-        title: "Post list Accepted",
-        url: "/listPostAccepted",
-      },
-    ],
-  },
 ];
 export const sidebarList = [
   {
