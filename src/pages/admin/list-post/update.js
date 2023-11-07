@@ -16,12 +16,12 @@ export default function UpdatePost({
 }) {
   // Add for post images
   const [selected, setSelected] = useState(
-    data.location
-      ? locationList.find((l) => l._id == data.location._id)
+    data?.location
+      ? locationList?.find((l) => l?._id == data?.location._id)
       : { _id: 1, name: "Khu vực" }
   );
   const [imagesState, setImagesState] = useState([]);
-  const [previewImages, setPriviewImages] = useState(data.images);
+  const [previewImages, setPriviewImages] = useState(data?.images);
 
   /** Bắt đầu phần để call api cho save ảnh và preview ảnh */
   const selectFilesHandler = async (e) => {
@@ -184,7 +184,7 @@ export default function UpdatePost({
           placeholder="What's on your mind?"
           rows="3"
           required
-          defaultValue={data.content}
+          defaultValue={data?.content}
         ></textarea>
         {/* <input
           type="file"
@@ -193,7 +193,7 @@ export default function UpdatePost({
           multiple="multiple"
         /> */}
         <div className=" mt-2">
-          {previewImages.map((preview, index) => (
+          {previewImages?.map((preview, index) => (
             <div key={index} style={{ width: "100px", position: "relative" }}>
               <img
                 src={preview.url ? preview.url : preview}
