@@ -205,7 +205,7 @@ export default function ListUser() {
                     </a>
                   </td>
                   <td className="py-2">{user.phoneNumber}</td>
-                  <td className="py-2 pl-5 wspace-no">{user.address}</td>
+                  <td className="py-2 pl-5 wspace-no">{user.address.substring(0, 20) + "..."}</td>
                   <td className="py-2 text-center">
                     {isUserInLocalStorage() == user._id ? (
                       <input
