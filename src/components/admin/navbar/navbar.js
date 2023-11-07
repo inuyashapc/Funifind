@@ -140,6 +140,7 @@ export default function Navbar({ user, setUser }) {
                           <>
                             {noti?.map((n) => (
                               <a
+                                key={n?._id}
                                 href="##"
                                 className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                               >
