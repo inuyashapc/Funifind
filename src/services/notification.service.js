@@ -17,6 +17,18 @@ class NotificationService {
       return error;
     }
   }
+  async getNotification() {
+    try {
+      const response = await axios.get(
+        API_URL + "list?page=1&size=5",
+
+        { headers: authHeader() }
+      );
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
 export default new NotificationService();
