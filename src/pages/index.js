@@ -58,8 +58,8 @@ export default function Home() {
     setSocket(newSocket);
   }, []);
   useEffect(() => {
-    if (user) {
-      const decodedToken = jwtDecode(user.accessToken);
+    if (user && user.accessToken) {
+      const decodedToken = jwtDecode(user?.accessToken);
       let currentDate = new Date();
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         authService.logout();

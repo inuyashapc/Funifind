@@ -6,12 +6,12 @@ import io from "socket.io-client";
 
 export default function Message() {
 	const router = useRouter();
-	const { id } = router.query;
+	const { email } = router.query;
 	const [messages, setMessages] = useState([]);
 	const [userData, setUserData] = useState({})
 	const [messageInput, setMessageInput] = useState('');
 	const [listReceiver, setListReceiver] = useState([]);
-	const [receiver, setReceiver] = useState(id);
+	const [receiver, setReceiver] = useState(email);
 	/** Bắt đầu phần Trung sửa kết nối socket và nhắn tin */
 	const [socket, setSocket] = useState(null);
 	// Kết nối tới sever socket
