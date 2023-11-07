@@ -7,13 +7,21 @@ import IconCheck from "../../../../public/Icons/IconCheck";
 import { Dialog, Transition, Menu, Listbox, Fragment } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-export default function CreatePost({ locationList }) {
+export default function UpdatePost({
+  locationList,
+  data,
+  setEdit,
+  refresh,
+  setRefresh,
+}) {
   // Add for post images
   const [selected, setSelected] = useState(
-    locationList ? locationList[0] : { _id: 1, name: "Khu vực" }
+    data.location
+      ? locationList.find((l) => l._id == data.location._id)
+      : { _id: 1, name: "Khu vực" }
   );
   const [imagesState, setImagesState] = useState([]);
-  const [previewImages, setPriviewImages] = useState([]);
+  const [previewImages, setPriviewImages] = useState(data.images);
 
   /** Bắt đầu phần để call api cho save ảnh và preview ảnh */
   const selectFilesHandler = async (e) => {
@@ -98,25 +106,24 @@ export default function CreatePost({ locationList }) {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     const newPost = e.target.post.value; // Get the new post text from the form
-    console.log(selected);
     if (newPost) {
       postService
-        .createPost(newPost, selected?._id)
+        .editPost(newPost, selected?._id, data._id)
         .then(async (response) => {
           if (imagesState && imagesState.length > 0) {
             await uploadFilesHandler(response?.data?._id);
           }
 
-          handleShowToast(
-            "Post created successfully! Waiting for admin approve."
-          );
-          e.target.reset(); // Clear the form
+          handleShowToast("Update successfully!");
+          setEdit(false);
+          setRefresh(!refresh);
         })
         .catch((error) => {
           console.log(error);
         });
     }
   };
+
   return (
     <form onSubmit={handlePostSubmit}>
       <div className="form-group">
@@ -177,18 +184,19 @@ export default function CreatePost({ locationList }) {
           placeholder="What's on your mind?"
           rows="3"
           required
+          defaultValue={data.content}
         ></textarea>
-        <input
+        {/* <input
           type="file"
           onChange={selectFilesHandler}
           accept="image/*"
           multiple="multiple"
-        />
+        /> */}
         <div className=" mt-2">
           {previewImages.map((preview, index) => (
             <div key={index} style={{ width: "100px", position: "relative" }}>
               <img
-                src={preview}
+                src={preview.url ? preview.url : preview}
                 alt={`Preview ${index}`}
                 style={{
                   width: "100px",
@@ -196,7 +204,7 @@ export default function CreatePost({ locationList }) {
                   margin: "10px",
                 }}
               />
-              <XMarkIcon
+              {/* <XMarkIcon
                 className="h-5 w-5 absolute"
                 aria-hidden="true"
                 style={{
@@ -206,7 +214,7 @@ export default function CreatePost({ locationList }) {
                   cursor: "pointer",
                 }}
                 onClick={() => handleDeleteImg(index)}
-              />
+              /> */}
             </div>
           ))}
         </div>
@@ -215,7 +223,7 @@ export default function CreatePost({ locationList }) {
         type="submit"
         className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
       >
-        Post
+        Update
       </button>
     </form>
   );

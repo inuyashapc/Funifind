@@ -7,7 +7,6 @@ import avt from "../../public/images/profile/16.jpg";
 import Image from "next/image";
 import { Dialog, Transition, Menu, Listbox, Fragment } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import authService from "@/services/auth.service";
 import CreatePost from "./admin/list-post/create";
@@ -27,10 +26,21 @@ import {
   Cog8ToothIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
+import UpdatePost from "./admin/list-post/update";
+import reportService from "@/services/report.service";
+import Link from "next/link";
 
 export default function Home() {
   const [user, setUser] = useState();
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [detail, setDetail] = useState(false);
+  const [deleteP, setDeleteP] = useState(false);
+  const [deleteC, setDeleteC] = useState(false);
+  const [reportPost, setReportPost] = useState(false);
+  const [reportComment, setReportComment] = useState(false);
+  const [selectPost, setSelectPost] = useState();
+  const [imagePost, setImagePost] = useState();
   const [refresh, setRefresh] = useState(false);
   const [search, setSearch] = useState();
   const pageSize = 5;
@@ -57,9 +67,9 @@ export default function Home() {
         window.location.reload();
       }
     }
-	if(user && socket){
-		socket.emit("storeUserId", user.id);
-	} 
+    if (user && socket) {
+      socket.emit("storeUserId", user.id);
+    }
   }, [user]);
   useEffect(() => {
     if (socket) {
@@ -83,19 +93,19 @@ export default function Home() {
         }
       });
 
-	  // Khi có một thông báo mới tới user, sẽ nhận được thông tin message ở đây
-	  socket.on("notification", (response) => {
-		toast.warn(response.message, {
-			position: "bottom-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "colored",
-		  });
-	  })
+      // Khi có một thông báo mới tới user, sẽ nhận được thông tin message ở đây
+      socket.on("notification", (response) => {
+        toast.warn(response.message, {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
     }
   }, [socket]);
   const handleComment = async (e, postID) => {
@@ -152,6 +162,142 @@ export default function Home() {
         console.log(error?.response?.data?.message);
       });
   };
+  const handleDelete = () => {
+    postService
+      .deletePost(selectPost?._id)
+      .then((response) => {
+        console.log(response);
+        toast.success(response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setDeleteP(false);
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        console.log();
+      });
+  };
+  const handleDeleteC = () => {
+    commentService
+      .deleteComment(selectPost?._id)
+      .then((response) => {
+        console.log(response);
+        toast.success(response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setDeleteC(false);
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        console.log();
+      });
+  };
+  const handleReport = async (e) => {
+    e.preventDefault();
+    const nguyennhan = e.target.post.value;
+    console.log(nguyennhan);
+    if (nguyennhan) {
+      reportService
+        .createReportPost(selectPost?._id, nguyennhan)
+        .then((response) => {
+          console.log(response);
+          toast.success(response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setReportPost(false);
+          e.target.reset();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        });
+    }
+  };
+  const handleReportC = async (e) => {
+    e.preventDefault();
+    const nguyennhan = e.target.comment.value;
+    console.log(nguyennhan);
+    if (nguyennhan) {
+      reportService
+        .createReportComment(selectPost?._id, nguyennhan)
+        .then((response) => {
+          console.log(response);
+          toast.success(response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setReportPost(false);
+          e.target.reset();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        });
+    }
+  };
   const loadDataPost = () => {
     postService
       .getAllPostUserWithPagination({
@@ -177,35 +323,56 @@ export default function Home() {
   useEffect(() => {
     loadDataPost();
   }, [currentPage, search, selected?._id, user, refresh]);
-  console.log(postPagination);
+  console.log(imagePost);
   function toggleClass(element, className) {
     if (!element.classList.contains(className)) {
       element.classList.add(className);
     } else element.classList.remove(className);
   }
   const handleOnclickBtnLike = async (postID, typeInteract, index) => {
-    toggleClass(
-      document.querySelectorAll(".btnlike-heart")[index],
-      "heart-active"
-    );
-    toggleClass(
-      document.querySelectorAll(".btnlike-text")[index],
-      "heart-active"
-    );
+    if (user) {
+      toggleClass(
+        document.querySelectorAll(".btnlike-heart")[index],
+        "heart-active"
+      );
+      toggleClass(
+        document.querySelectorAll(".btnlike-text")[index],
+        "heart-active"
+      );
 
-    interactionService
-      .interactWithPost({ postID, typeInteract })
-      .then((response) => {
-        setRefresh(!refresh);
-        console.log("🚀 ========= response:", response);
-        console.log("🚀 ========= post:", postID);
-      })
-      .catch((error) => {
-        console.log(error?.response?.data?.message);
-      });
+      interactionService
+        .interactWithPost({ postID, typeInteract })
+        .then((response) => {
+          setRefresh(!refresh);
+          console.log("🚀 ========= response:", response);
+          console.log("🚀 ========= post:", postID);
+        })
+        .catch((error) => {
+          console.log(error?.response?.data?.message);
+        });
+    } else handleShowToast("Login before like");
   };
   function closeModal() {
     setOpen(false);
+  }
+  function closeModalEdit() {
+    setEdit(false);
+  }
+  function closeModaldelete() {
+    setDeleteP(false);
+  }
+  function closeModaldeleteC() {
+    setDeleteC(false);
+  }
+  function closeModalDetails() {
+    setDetail(false);
+  }
+
+  function closeModalReport() {
+    setReportPost(false);
+  }
+  function closeModalReportComment() {
+    setReportComment(false);
   }
   const handleShowToast = (message) => {
     toast.error(message, {
@@ -223,7 +390,31 @@ export default function Home() {
     if (user != undefined) setOpen(true);
     else handleShowToast("Login before create new post");
   }
-
+  const handlePreEdit = (post) => {
+    setSelectPost(post);
+    setEdit(true);
+  };
+  const handlePreDelete = (post) => {
+    setSelectPost(post);
+    setDeleteP(true);
+  };
+  const handlePreReport = (post) => {
+    setSelectPost(post);
+    setReportPost(true);
+  };
+  const handleOpenDetails = (images) => {
+    setImagePost(images);
+    setDetail(true);
+  };
+  const handlePreDeleteComment = (comment) => {
+    setSelectPost(comment);
+    setDeleteC(true);
+  };
+  const handlePreReportComment = (comment) => {
+    setSelectPost(comment);
+    setReportComment(true);
+  };
+  console.log(selectPost);
   return (
     <>
       <Navbar user={user} setUser={setUser} />
@@ -272,7 +463,350 @@ export default function Home() {
             </div>
           </Dialog>
         </Transition>
-        <div className="col container-fluid">
+        <Transition appear show={edit} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModalEdit}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "200%", minHeight: "400px" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Chỉnh sửa bài viết
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <UpdatePost
+                        locationList={locationList}
+                        data={selectPost}
+                        setEdit={setEdit}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
+                      />
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={deleteP} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModaldelete}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "100%", minHeight: "100px" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 "
+                    >
+                      {"Are you sure delete this post ?"}
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red px-4 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={handleDelete}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={deleteC} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={closeModaldeleteC}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "100%", minHeight: "100px" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 "
+                    >
+                      {"Are you sure delete this comment ?"}
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red px-4 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={handleDeleteC}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={reportPost} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModalReport}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "200%" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Report Post
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <form onSubmit={handleReport}>
+                        <textarea
+                          name="post"
+                          className="form-control mb-2"
+                          placeholder="Why?"
+                          rows="3"
+                          required
+                        ></textarea>
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Report
+                        </button>
+                      </form>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={reportComment} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={closeModalReportComment}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel
+                    className="w-full max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                    style={{ width: "200%" }}
+                  >
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Report Comment
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <form onSubmit={handleReportC}>
+                        <textarea
+                          name="comment"
+                          className="form-control mb-2"
+                          placeholder="Why?"
+                          rows="3"
+                          required
+                        ></textarea>
+                        <button
+                          type="submit"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        >
+                          Report
+                        </button>
+                      </form>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={detail} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-10"
+            onClose={closeModalDetails}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-60"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-60"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-lg transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
+                    >
+                      Images of Posts
+                    </Dialog.Title>
+                    <div
+                      className="mt-2"
+                      style={{ maxHeight: "80vh", overflow: "auto" }}
+                    >
+                      <div
+                        className="text-truncate text-truncate-multiline-ellipsis"
+                        style={{
+                          width: "90%",
+                          overflowWrap: "break-word",
+                        }}
+                      >
+                        <a
+                          className="card-title my-2"
+                          title={selectPost?.title}
+                        >
+                          {selectPost?.content}
+                        </a>
+                      </div>
+
+                      <div style={{ padding: "10px 00px 0px 10px" }}>
+                        <p className="card-text">{selectPost?.description}</p>
+                      </div>
+
+                      {imagePost &&
+                        imagePost.map((image, index) => (
+                          <img
+                            key={image?._id}
+                            src={image?.url}
+                            class="card-img-top mt-3"
+                            alt="f"
+                          />
+                        ))}
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <div className="col-9 container-fluid">
           <div className=" justify-center">
             <div className="card-header">
               <div className="flex items-center gap-2 justify-start">
@@ -366,7 +900,7 @@ export default function Home() {
 
           <div
             className="row px-2"
-            style={{ maxHeight: "80vh", overflow: "auto" }}
+            style={{ maxHeight: "70vh", overflow: "auto" }}
           >
             {postPagination?.map((post, index) => (
               <div key={post?._id} className="col-9 ">
@@ -380,17 +914,22 @@ export default function Home() {
                         style={{
                           height: "40px",
                           width: "40px",
-                          cursor: "pointer",
                         }}
                       />
                       <div>
-                        <a
-                          href="#"
-                          className="hover-decoration "
-                          style={{ color: "black" }}
+                        <Link
+                          className="btn hover-decoration "
+                          href={`/profiles/${post?.user?._id}`}
+                          style={{
+                            color: "black",
+                            fontSize: "18px",
+                            padding: "0",
+                            margin: 0,
+                          }}
                         >
                           {post?.user?.name}
-                        </a>
+                        </Link>
+
                         <div style={{ fontSize: "12px" }}>
                           {dayjs(post?.createdAt).format("DD/MM/YYYY")}
                         </div>
@@ -429,6 +968,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreEdit(post)}
                                     >
                                       Edit
                                     </button>
@@ -442,6 +982,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreDelete(post)}
                                     >
                                       Delete
                                     </button>
@@ -458,6 +999,7 @@ export default function Home() {
                                           ? "bg-violet-500 text-white"
                                           : "text-gray-900"
                                       } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                      onClick={() => handlePreReport(post)}
                                     >
                                       Report
                                     </button>
@@ -490,11 +1032,7 @@ export default function Home() {
                       overflowWrap: "break-word",
                     }}
                   >
-                    <a
-                      href="#"
-                      className="card-title my-2 hover-decoration "
-                      title={post.title}
-                    >
+                    <a className="card-title my-2" title={post.title}>
                       {post?.content}
                     </a>
                   </div>
@@ -502,19 +1040,21 @@ export default function Home() {
                   <div style={{ padding: "10px 00px 0px 10px" }}>
                     <p className="card-text">{post.description}</p>
 
-                    <a
-                      href="#"
+                    <span
                       className="card-link  text-primary hover-decoration "
+                      onClick={() => handleOpenDetails(post?.images)}
                     >
                       View more
-                    </a>
+                    </span>
                   </div>
 
-                  <img
-                    src={post?.images[0]?.url}
-                    class="card-img-top"
-                    alt="f"
-                  />
+                  {post?.images[0]?.url && (
+                    <img
+                      src={post?.images[0]?.url}
+                      class="card-img-top"
+                      alt="f"
+                    />
+                  )}
 
                   <ul className="d-flex flex-wrap mb-sm-0 mb-2 justify-start mt-3">
                     <li className="text-nowrap mb-2 relative mr-3">
@@ -582,13 +1122,19 @@ export default function Home() {
                         className="row border bg-blue-50 rounded-sm p-1 my-1"
                       >
                         <div className="col-3 text-truncate text-truncate-multiline-ellipsis">
-                          <a
-                            href="#"
-                            className="hover-decoration "
-                            style={{ color: "black" }}
+                          <Link
+                            className="btn hover-decoration "
+                            href={`/profiles/${comment?.user?._id}`}
+                            style={{
+                              color: "black",
+                              fontSize: "14px",
+                              padding: "0",
+                              margin: 0,
+                            }}
                           >
                             {comment?.user?.name}
-                          </a>
+                          </Link>
+
                           <div style={{ fontSize: "12px" }}>
                             {dayjs(comment?.createdAt).format("DD/MM/YYYY")}
                           </div>
@@ -626,7 +1172,7 @@ export default function Home() {
                                 >
                                   {comment?.user?._id === user?.id ? (
                                     <div className="px-1 py-1 ">
-                                      <Menu.Item>
+                                      {/* <Menu.Item>
                                         {({ active }) => (
                                           <button
                                             className={`${
@@ -638,7 +1184,7 @@ export default function Home() {
                                             Edit
                                           </button>
                                         )}
-                                      </Menu.Item>
+                                      </Menu.Item> */}
                                       <Menu.Item>
                                         {({ active }) => (
                                           <button
@@ -647,6 +1193,9 @@ export default function Home() {
                                                 ? "bg-violet-500 text-white"
                                                 : "text-gray-900"
                                             } group flex w-full items-center rounded-md px-1 py-1 text-sm`}
+                                            onClick={() =>
+                                              handlePreDeleteComment(comment)
+                                            }
                                           >
                                             Delete
                                           </button>
@@ -663,6 +1212,9 @@ export default function Home() {
                                                 ? "bg-violet-500 text-white"
                                                 : "text-gray-900"
                                             } group flex w-full items-center rounded-md px-1 py-1 text-sm`}
+                                            onClick={() =>
+                                              handlePreReportComment(comment)
+                                            }
                                           >
                                             Report
                                           </button>
@@ -714,32 +1266,34 @@ export default function Home() {
                 </div>
               </div>
             ))}
-            <div className="col-9">
-              <ReactPaginate
-                nextLabel="next >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={pageSize}
-                marginPagesDisplayed={2}
-                pageCount={
-                  totalPost % pageSize === 0
-                    ? totalPost / pageSize
-                    : Math.floor(totalPost / pageSize) + 1
-                }
-                previousLabel="< previous"
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                breakLabel="..."
-                breakClassName="page-item"
-                breakLinkClassName="page-link"
-                containerClassName="pagination"
-                activeClassName="active"
-                renderOnZeroPageCount={null}
-              />
-            </div>
+            {postPagination && (
+              <div className="col-9">
+                <ReactPaginate
+                  nextLabel="next >"
+                  onPageChange={handlePageClick}
+                  pageRangeDisplayed={pageSize}
+                  marginPagesDisplayed={2}
+                  pageCount={
+                    totalPost % pageSize === 0
+                      ? totalPost / pageSize
+                      : Math.floor(totalPost / pageSize) + 1
+                  }
+                  previousLabel="< previous"
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousClassName="page-item"
+                  previousLinkClassName="page-link"
+                  nextClassName="page-item"
+                  nextLinkClassName="page-link"
+                  breakLabel="..."
+                  breakClassName="page-item"
+                  breakLinkClassName="page-link"
+                  containerClassName="pagination"
+                  activeClassName="active"
+                  renderOnZeroPageCount={null}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

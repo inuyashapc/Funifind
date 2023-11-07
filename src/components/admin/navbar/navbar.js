@@ -12,6 +12,7 @@ import Login from "@/pages/login";
 
 import { Popover, Transition } from "@headlessui/react";
 import IconNotification from "../../../../public/Icons/IconNotification";
+import notificationService from "@/services/notification.service";
 
 export default function Navbar({ user, setUser }) {
   //Register modal
@@ -51,7 +52,7 @@ export default function Navbar({ user, setUser }) {
   });
   const [errors, setErrors] = useState([]);
   const [success, setSuccess] = useState("");
-
+  const [noti, setNoti] = useState();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -93,6 +94,17 @@ export default function Navbar({ user, setUser }) {
       console.log("Không có dữ liệu trong Local Storage.");
     }
   }, []);
+  useEffect(() => {
+    notificationService
+      .getNotification()
+      .then((response) => {
+        setNoti(response?.data);
+      })
+      .catch((error) => {
+        console.log(error?.response?.data?.message);
+      });
+  }, []);
+  console.log(noti);
   return (
     <div>
       <div className="nav-header">
@@ -122,19 +134,25 @@ export default function Navbar({ user, setUser }) {
                   <Popover.Panel className="absolute left-1/4 z-10 mt-3 w-screen max-w-sm -translate-x-1/4 transform px-4 sm:px-0 lg:max-w-3xl ">
                     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 mx-1 my-1">
                       <div className="bg-gray-50">
-                        <a
-                          href="##"
-                          className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                        >
-                          <span className="flex items-center">
-                            <span className="text-sm font-medium text-gray-900">
-                              Bài đăng bị reject
-                            </span>
-                          </span>
-                          <span className="block text-sm text-gray-500">
-                            Bài đăng của bạn đã bị ThangNH reject
-                          </span>
-                        </a>
+                        {noti?.length == 0 ? (
+                          "There is no have Notification"
+                        ) : (
+                          <>
+                            {noti?.map((n) => (
+                              <a
+                                key={n?._id}
+                                href="##"
+                                className="flow-root rounded-md px-2 py-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              >
+                                <span className="flex items-center">
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {n?.content}
+                                  </span>
+                                </span>
+                              </a>
+                            ))}
+                          </>
+                        )}
                       </div>
                     </div>
                   </Popover.Panel>
@@ -276,9 +294,7 @@ export default function Navbar({ user, setUser }) {
                           <div className="new-account mt-3">
                             <p className="text-white">
                               Already have an account?{" "}
-                              <a
-                                className="text-white font-bold"
-                              >
+                              <a className="text-white font-bold">
                                 <button onClick={switchToLogin}>Sign in</button>
                               </a>
                             </p>

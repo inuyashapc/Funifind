@@ -34,6 +34,24 @@ class ReportService {
       }
     );
   }
+  async createReportPost(postId, description) {
+    return await axios.post(
+      API_URL + "createReportPost",
+      { postId, description },
+      {
+        headers: authHeader(),
+      }
+    );
+  }
+  async createReportComment(postId, description) {
+    return await axios.post(
+      API_URL + "createReportComment",
+      { postId, description },
+      {
+        headers: authHeader(),
+      }
+    );
+  }
 }
 
 export default new ReportService();
